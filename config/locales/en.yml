@@ -26,6 +26,7 @@ en:
   users:
     email: e-mail
     password: password
+    password_confirmation: password confirmation
 
   actions:
     sign_in: sign in
