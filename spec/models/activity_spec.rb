@@ -1,9 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Activity, type: :model do
-  describe 'FactoryGirl factory' do
+  describe 'factories' do
     it 'has valid factories' do
-
       work = create :activity_work
       project_x = create :activity_work_project_x
       project_dharma = create :activity_work_project_dharma
@@ -24,13 +23,35 @@ RSpec.describe Activity, type: :model do
   end
 
   describe 'validations' do
-    it 'is invalid without name, slug, user or color' do
+    it 'is invalid without name or user' do
       attributes = attributes_for :activity_work_project_x
 
-      expect(Activity.new attributes.slice(:name, :slug, :user)).to be_invalid
-      expect(Activity.new attributes.slice(:name, :slug, :color)).to be_invalid
-      expect(Activity.new attributes.slice(:name, :user, :color)).to be_invalid
-      expect(Activity.new attributes.slice(:slug, :user, :color)).to be_invalid
+      expect(Activity.new attributes.except(:name)).to be_invalid
+      expect(Activity.new attributes.except(:color, :parent)).to be_invalid
+      expect(Activity.new attributes.except(:user)).to be_invalid
+    end
+  end
+
+  describe 'create' do
+    it 'infers slug if omnited' do
+      attributes = attributes_for :activity_work
+
+      activity = Activity.create attributes.slice(:slug)
+      expect(activity.slug).to eq 'work'
+    end
+
+    it 'includes parents slug while infering slugs' do
+      attributes = attributes_for :activity_work_project_x
+
+      activity = Activity.create attributes.except(:slug)
+      expect(activity.slug).to eq 'work:project-x'
+    end
+
+    it 'copies parents color if omnited' do
+      attributes = attributes_for :activity_work_project_x
+
+      activity = Activity.create attributes.except(:color)
+      expect(activity.color).to eq activity.parent.color
     end
   end
 end
