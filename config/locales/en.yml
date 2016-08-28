@@ -20,4 +20,21 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  entities:
+    users: users
+
+  users:
+    email: e-mail
+    password: password
+    password_confirmation: password confirmation
+
+  actions:
+    sign_in: sign in
+    sign_up: sign up
+    create: create
+    cancel: cancel
+    update: update
+    reset: reset
+    confirm_delete: Are you sure? This action cant be undone.
+    editing: editing
+    add: add
