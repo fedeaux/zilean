@@ -2,6 +2,11 @@ FactoryGirl.define do
   factory :activity do
     user { create_or_find_user :user_ray }
 
+    factory :activity_sleep do
+      name 'Sleep'
+      color '#00F'
+    end
+
     factory :activity_work do
       name 'Work'
       slug 'work'

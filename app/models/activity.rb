@@ -11,7 +11,7 @@ class Activity < ApplicationRecord
       if parent
         self.slug = [parent.slug, self.name.urlize].join ':'
       else
-        self.slug = self.name.urlize.join ':'
+        self.slug = self.name.urlize
       end
     end
   end
