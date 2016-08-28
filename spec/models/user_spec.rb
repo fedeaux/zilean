@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
       expect(create :user_ray).to be_valid
     end
 
-    it 'can have a user fetched from the database instead of creating it raising active-record errors' do
+    it 'can have an user fetched from the database instead of creating it raising active-record errors' do
       expect(create_or_find_user :user_ray).to be_valid
       expect(create_or_find_user :user_ray).to be_valid
     end
