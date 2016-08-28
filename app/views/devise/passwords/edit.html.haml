@@ -1,0 +1,16 @@
+= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: 'ui form' }) do |f|
+  .ui.three.column.centered.doubling.stackable.grid
+    .column
+      .ui.segment
+        %h4.ui.dividing.header Escolha uma nova senha
+        = f.hidden_field :reset_password_token
+        .field
+          = f.label :password, "Nova senha"
+          = f.password_field :password, autofocus: true, autocomplete: "off"
+        .field
+          = f.label :password_confirmation, "Confirmação"
+          = f.password_field :password_confirmation, autocomplete: "off"
+        .actions
+          = f.submit "Confirmar", class: 'ui primary button'
+
+        = render "devise/shared/links"
