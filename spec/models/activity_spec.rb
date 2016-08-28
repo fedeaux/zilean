@@ -22,4 +22,15 @@ RSpec.describe Activity, type: :model do
       expect(work_1.id).to eq work_2.id
     end
   end
+
+  describe 'validations' do
+    it 'is invalid without name, slug, user or color' do
+      attributes = attributes_for :activity_work_project_x
+
+      expect(Activity.new attributes.slice(:name, :slug, :user)).to be_invalid
+      expect(Activity.new attributes.slice(:name, :slug, :color)).to be_invalid
+      expect(Activity.new attributes.slice(:name, :user, :color)).to be_invalid
+      expect(Activity.new attributes.slice(:slug, :user, :color)).to be_invalid
+    end
+  end
 end
