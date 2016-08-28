@@ -26,4 +26,41 @@ RSpec.describe 'Activity Requests', type: :request do
       end
     end
   end
+
+  describe 'POST api/activities' do
+    it 'is unauthorized if no user is logged in' do
+      post '/api/activities'
+      expect(response).to be_unauthorized
+    end
+
+    context 'Authorized' do
+      before :each do
+        login_as create :user_ray
+        create :activity_work_project_x
+        create :activity_work_project_dharma
+      end
+
+      it 'creates an activity' do
+        attributes = attributes_for(:activity_sleep)
+        post '/api/activities', params: { activity: attributes }
+        json_response = JSON.parse response.body
+
+        expect(json_response['id']).not_to be nil
+        expect(json_response['name']).to eq attributes[:name]
+      end
+
+      it 'creates an activity with parent' do
+        parent = create :activity_sleep
+        attributes = { name: 'Nap', parent_id: parent.id }
+        post '/api/activities', params: { activity: attributes }
+        json_response = JSON.parse response.body
+
+        expect(json_response['id']).not_to be nil
+        expect(json_response['name']).to eq attributes[:name]
+
+        expect(json_response['color']).to eq parent.color
+        expect(json_response['parent_id']).to eq parent.id
+      end
+    end
+  end
 end

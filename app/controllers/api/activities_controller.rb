@@ -7,9 +7,8 @@ class Api::ActivitiesController < Api::BaseController
 
   def create
     @activity = Activity.new(activity_params)
-    @activity.created_by = current_user
+    @activity.user = current_user
     @activity.save
-
     render :show
   end
 
