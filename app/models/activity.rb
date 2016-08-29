@@ -21,4 +21,22 @@ class Activity < ApplicationRecord
       self.color = self.parent.color
     end
   end
+
+  def path_ids
+    ancestor_ids + [id]
+  end
+
+  def path
+    ancestors.all + [self]
+  end
+
+  def path_names(join: nil)
+    activities = path.map { |activity| activity.name }
+    return activities.join join if join
+    activities
+  end
+
+  def breadcrumbs_path_names
+    path_names join: ' > '
+  end
 end

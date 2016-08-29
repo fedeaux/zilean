@@ -1,4 +1,4 @@
-attributes :id, :name, :slug, :color, :parent_id
+attributes :id, :name, :slug, :color, :parent_id, :breadcrumbs_path_names
 
 node :errors do |task|
   task.errors.messages
