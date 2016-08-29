@@ -14,4 +14,8 @@
 //= require jquery_ujs
 //= require semantic_ui/semantic_ui
 //= require turbolinks
+//= require angular
+//= require angular-resource
+//= require angular-route
+//= require ng/index
 //= require_tree .

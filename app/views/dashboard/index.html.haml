@@ -1,3 +1,6 @@
-.ui.four.columns.grid
+.ui.four.columns.grid{{ 'ng-controller': 'DashboardController as dashboard_ctrl' }}
   .column
     = render 'dashboard/controls'
+
+  .column
+    = render 'activities/dashboard'

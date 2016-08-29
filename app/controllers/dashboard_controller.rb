@@ -9,6 +9,6 @@ class DashboardController < ApplicationController
   private
   def template_name
     parts = params[:name].split('/')
-    "#{parts[0..-2].join('/')}/_#{parts.last}"
+    "/#{parts[0..-2].join('/')}/_#{parts.last}"
   end
 end
