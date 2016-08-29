@@ -50,6 +50,9 @@ class ActivitiesController
 
     @resetFormActivity()
 
+  setBlankFormActivity: ->
+    @setFormActivity new @Activity
+
   resetFormActivity: ->
     @form_activity = null
     @original_form_activity = null

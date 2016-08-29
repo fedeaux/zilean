@@ -1,5 +1,7 @@
 = form_for Activity.new, url: '', html: { class: 'ui form', 'ng-show': 'activities_ctrl.form_activity' } do |f|
-  %h3.ui.header Editing {{ activities_ctrl.form_activity.name }} [{{ activities_ctrl.form_activity.id }}]
+  %h3.ui.header{ 'ng-show': 'activities_ctrl.form_activity.isPersisted()' } Editing {{ activities_ctrl.form_activity.name }} [{{ activities_ctrl.form_activity.id }}]
+
+  %h3.ui.header{ 'ng-hide': 'activities_ctrl.form_activity.isPersisted()' } Creating Activity
 
   .field
     = f.label :name
@@ -14,5 +16,9 @@
     = f.select :parent, [], {}, { 'ng-model': 'activities_ctrl.form_activity.parent', 'ng-options': "option.breadcrumbs_path_names for option in activities_ctrl.activities_as_options track by option.id*1" }
 
   .ui.small.buttons{ 'ng-show': 'activities_ctrl.form_activity.isPersisted()' }
-    .ui.primary.button#update-activity-button{ 'ng-click': 'activities_ctrl.saveActivity()' }= t 'actions.update'
+    %submit.ui.primary.button#update-activity-button{ 'ng-click': 'activities_ctrl.saveActivity()' }= t 'actions.update'
     .ui.basic.button#cancel-edit-activity-button{ 'ng-click': 'activities_ctrl.cancelEditActivity()' }= t 'actions.cancel'
+
+  .ui.small.buttons{ 'ng-hide': 'activities_ctrl.form_activity.isPersisted()' }
+    %submit.ui.primary.button#create-activity-button{ 'ng-click': 'activities_ctrl.saveActivity()' }= t 'actions.create'
+    .ui.basic.button#cancel-create-button{ 'ng-click': 'activities_ctrl.cancelEditActivity()' }= t 'actions.cancel'
