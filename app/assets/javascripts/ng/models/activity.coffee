@@ -21,11 +21,11 @@ angular.module('ZileanApp').factory 'Activity', ($resource) ->
         name: null
         slug: null
         color: null
-        parent_id: null
         breadcrumbs_path_names: ''
 
       unless update
         attr.children = []
+        attr.parent = { id: null }
 
       attr
 
@@ -35,6 +35,9 @@ angular.module('ZileanApp').factory 'Activity', ($resource) ->
       for name, default_value of @defaultAttributes(true)
         attr[name] = @[name]
 
+      if @parent
+        attr.parent_id = @parent.id
+
       attr
 
     createChildren: ->
@@ -42,6 +45,7 @@ angular.module('ZileanApp').factory 'Activity', ($resource) ->
         children = {}
         for activity in @children
           children[activity.id] = new Activity activity
+          children[activity.id].parent = @
 
         @children = children
 

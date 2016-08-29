@@ -5,8 +5,9 @@ class ActivitiesController
     @service = new @ResourceService @serverErrorHandler, 'activity', 'activities'
     @loadActivities()
 
-  loadActivities: ->
+  loadActivities: (force = false) ->
     @activities ?= {}
+    @activities = {} if force
 
     @service.index (data) =>
       for activity_attr in data['activities']
@@ -17,6 +18,9 @@ class ActivitiesController
   updateAuxiliarActivities: ->
     @displayable_activities = (activity for id, activity of @activities)
     @all_activities = [].concat.apply([], (activity.withChildren() for id, activity of @activities))
+
+    @activities_as_options = angular.copy @all_activities
+    @activities_as_options.unshift { breadcrumbs_path_names: '[none]', id: null }
 
   setFormActivity: (activity) ->
     @form_activity = activity
@@ -35,13 +39,18 @@ class ActivitiesController
     else
       @service.create @form_activity, @saveActivityCallback
 
-  saveActivityCallback: (data) ->
-    console.log data
+    @resetFormActivity()
+
+  saveActivityCallback: (data) =>
+    @loadActivities true
 
   cancelEditActivity: ->
     if @original_form_activity
       @form_activity.setAttributes @original_form_activity, true
 
+    @resetFormActivity()
+
+  resetFormActivity: ->
     @form_activity = null
     @original_form_activity = null
 
