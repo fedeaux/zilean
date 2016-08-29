@@ -1,4 +1,10 @@
-{{ activity.name }}
+.activity-title
+  .color-bubble{ 'ng-style': "{ 'background-color': '{{ activity.color }}' }"}
+  {{ activity.name }}
 
-.item{ 'ng-repeat': 'activity in activity.children' }
-  .div{ 'data-activity-list-item': true  }
+  .actions
+    %i.small.edit.icon
+    %i.small.eye.icon
+
+.activity-list-item{ 'ng-repeat': 'activity in activity.children' }
+  %div{ 'data-activity-list-item': true  }
