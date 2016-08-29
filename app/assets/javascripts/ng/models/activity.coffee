@@ -21,6 +21,8 @@ angular.module('ZileanApp').factory 'Activity', ($resource) ->
         name: null
         slug: null
         color: null
+        parent_id: null
+        breadcrumbs_path_names: ''
 
       unless update
         attr.children = []
@@ -42,6 +44,10 @@ angular.module('ZileanApp').factory 'Activity', ($resource) ->
           children[activity.id] = new Activity activity
 
         @children = children
+
+    withChildren: ->
+      all = [@].concat (child.withChildren() for id, child of @children)
+      [].concat.apply [], all
 
     # saveMessage: (task_message) ->
     #   @task_messages[task_message.id] = task_message
