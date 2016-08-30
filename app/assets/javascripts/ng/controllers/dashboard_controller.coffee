@@ -1,11 +1,11 @@
-angular.module('ZileanApp').controller 'DashboardController', ($scope, $route, $routeParams, $location) ->
-  window.dashboard_scope = $scope
-  $scope.modules = {}
+class DashboardController
+  constructor: (@scope) ->
+    window.dashboard_ctrl = @
+    @components = {}
+    @scope.$on 'Dashboard:Register', @registerComponent
 
-  $scope.$on 'Dashboard:Register', (event, module) ->
-    $scope.modules[module['id']] = module
+  registerComponent: (event, component) =>
+    @components[component['id']] = component
 
-  $scope.isVisible = (module_id) ->
-    $scope.modules[module_id].visible
-
-  serverErrorHandler = ->
+DashboardController.$inject = ['$scope']
+angular.module('ZileanApp').controller 'DashboardController', DashboardController

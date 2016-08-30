@@ -1,1 +1,7 @@
-.item{ 'ng-repeat': '(id, module) in dashboard_ctrl.modules' } {{ id }}
+#dashboard-controls
+  .ui.dropdown.link
+    .text Components
+    %i.dropdown.icon
+
+    .ui.menu
+      .item{ 'ng-repeat': '(id, component) in dashboard_ctrl.components', 'ng-class': '{ "active" : component.visible }' } {{ component.name }}

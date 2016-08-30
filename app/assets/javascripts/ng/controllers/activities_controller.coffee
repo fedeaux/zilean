@@ -1,7 +1,7 @@
 class ActivitiesController
-  constructor: (@$scope, @$route, @$routeParams, @$location, @ResourceService, @Activity) ->
+  constructor: (@$scope, @ResourceService, @Activity) ->
     window.activities_ctrl = @
-    @$scope.$emit 'Dashboard:Register', @module
+    @$scope.$emit 'Dashboard:Register', @component
     @service = new @ResourceService @serverErrorHandler, 'activity', 'activities'
     @loadActivities()
 
@@ -28,7 +28,7 @@ class ActivitiesController
     if @form_activity.isPersisted()
       @original_form_activity = angular.copy activity
 
-  module:
+  component:
     id: 'activities',
     name: 'Activities',
     visible: true
@@ -59,5 +59,5 @@ class ActivitiesController
 
   serverErrorHandler: ->
 
-ActivitiesController.$inject = ['$scope', '$route', '$routeParams', '$location', 'ResourceService', 'Activity']
+ActivitiesController.$inject = ['$scope', 'ResourceService', 'Activity']
 angular.module('ZileanApp').controller 'ActivitiesController', ActivitiesController
