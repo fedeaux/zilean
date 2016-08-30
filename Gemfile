@@ -54,6 +54,7 @@ group :development, :test do
   gem 'database_cleaner', :git => 'git://github.com/bmabey/database_cleaner.git'
   gem 'factory_girl_rails'
   gem 'email_spec'
+  gem 'cucumber-rails', require: false
 end
 
 group :development do
