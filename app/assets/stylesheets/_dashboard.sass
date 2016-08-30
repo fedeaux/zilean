@@ -1,0 +1,37 @@
+$dark-slate-gray: darken(SlateGray, 30%)
+$darker-slate-gray: darken($dark-slate-gray, 20%)
+$light-slate-gray: lighten(SlateGray, 40%)
+$lighter-slate-gray: lighten($light-slate-gray, 10%)
+
+#dashboard-wrapper
+  min-height: 100%
+  background-color: SlateGray
+
+.dashboard-component-wrapper
+  +border-radius(0.2em)
+  +box-shadow($dark-slate-gray 0 1px 3px)
+  margin: 1em
+  height: 100%
+  display: inline-block
+  width: 25%
+
+.dashboard-component-controls
+  +border-radius(0.2em 0.2em 0 0)
+  background-color: $dark-slate-gray
+  color: rgba(255, 255, 255, 0.8)
+  padding: 0.2em 0.5em
+  border-bottom: thin $darker-slate-gray solid
+
+  .actions
+    color: rgba(255, 255, 255, 0.6)
+    float: right
+    cursor: pointer
+
+    &:hover
+      color: white
+
+.dashboard-component
+  +border-radius(0 0 0.2em 0.2em)
+  background-color: $light-slate-gray
+  border-top: thin $lighter-slate-gray solid
+  padding: 1em
