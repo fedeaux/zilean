@@ -6,18 +6,8 @@ require 'spec_helper'
 require 'rspec/rails'
 
 require 'factory_girl_rails'
-require "capybara/rspec"
-require 'capybara-screenshot/rspec'
 
 Dir.glob('spec/support/**/*.rb') { |f| require_relative f.split('/')[1..-1].join('/') }
-
-Capybara.javascript_driver = :webkit
-
-Capybara::Webkit.configure do |config|
-  config.block_unknown_urls
-  # Uncomment this line to get verbose browser activity
-  # config.debug = true
-end
 
 ActiveRecord::Migration.maintain_test_schema!
 
@@ -27,7 +17,6 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include Warden::Test::Helpers
   config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Capybara::DSL
 
   config.before :suite do
     Warden.test_mode!

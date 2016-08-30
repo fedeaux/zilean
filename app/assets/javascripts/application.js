@@ -10,6 +10,7 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require es5-shim/es5-shim.min.js
 //= require jquery
 //= require jquery_ujs
 //= require semantic_ui/semantic_ui

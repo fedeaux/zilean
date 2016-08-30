@@ -1,5 +1,13 @@
 Feature: Dashborad Component Visibility
 
 Scenario: Viewing dashboard
-When I am on the homepage
-Then I should see the "Components" menu item
+Given I am signed in
+When I am on the dashboard
+Then I should see the "dashboard controls"
+
+Scenario: Hiding a component
+Given I am signed in
+When I am on the dashboard
+Then I should see the "activities component"
+When I "click" the "close button for the activities component"
+Then I should not see the "activities component"

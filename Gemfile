@@ -18,6 +18,7 @@ gem 'therubyracer'
 gem 'less-rails-semantic_ui'
 
 # Frontend
+gem "bower-rails", "~> 0.10.0"
 gem 'angularjs-rails'
 gem 'coffee-rails', '~> 4.2'
 gem 'compass-rails'
