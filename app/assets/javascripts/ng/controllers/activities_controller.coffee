@@ -30,7 +30,7 @@ class ActivitiesController
 
   component:
     id: 'activities',
-    name: 'Activities',
+    title: 'Activities',
     visible: true
 
   saveActivity: ->

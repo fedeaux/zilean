@@ -4,4 +4,6 @@
     %i.dropdown.icon
 
     .ui.menu
-      .item{ 'ng-repeat': '(id, component) in dashboard_ctrl.components', 'ng-class': '{ "active" : component.visible }' } {{ component.name }}
+      .item{ 'ng-repeat': '(id, component) in dashboard_ctrl.components',
+             'ng-class': '{ "active" : component.visible }',
+             'ng-click': 'dashboard_ctrl.toggleComponentVisibility(id)' } {{ component.title }}

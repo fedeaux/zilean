@@ -1,5 +1,5 @@
-.dashboard-component-wrapper
-  = render 'dashboard/components/controls'
+.dashboard-component-wrapper{ 'ng-show': "dashboard_ctrl.components.#{component}.visible" }
+  = render 'dashboard/components/controls', component: component
 
   .dashboard-component
-    = render component
+    = render "#{component}/dashboard"

@@ -1,6 +1,6 @@
 .dashboard-component-controls
   .title
-    Activities
+    = "{{ dashboard_ctrl.components.#{component}.title }}"
 
     .actions
-      %i.small.close.icon
+      %i.small.close.icon{ 'ng-click': "dashboard_ctrl.toggleComponentVisibility('#{component}')" }
