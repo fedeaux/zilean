@@ -27,7 +27,6 @@ RSpec.describe Activity, type: :model do
       attributes = attributes_for :activity_work_project_x
 
       expect(Activity.new attributes.except(:name)).to be_invalid
-      expect(Activity.new attributes.except(:color, :parent)).to be_invalid
       expect(Activity.new attributes.except(:user)).to be_invalid
     end
   end

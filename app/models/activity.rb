@@ -10,15 +10,19 @@ class Activity < ApplicationRecord
     unless self.slug
       if parent
         self.slug = [parent.slug, self.name.urlize].join ':'
-      else
+      elsif self.name
         self.slug = self.name.urlize
       end
     end
   end
 
   def infer_color
-    if !self.color and self.parent
-      self.color = self.parent.color
+    if !self.color
+      if self.parent
+        self.color = self.parent.color
+      else
+        self.color = 'black'
+      end
     end
   end
 

@@ -1,4 +1,4 @@
-= form_for Activity.new, url: '', html: { class: 'ui form', 'ng-show': 'activities_ctrl.form_activity' } do |f|
+= form_for Activity.new, url: '', html: { class: 'ui form activity-form', 'ng-show': 'activities_ctrl.form_activity' } do |f|
   %h3.ui.header{ 'ng-show': 'activities_ctrl.form_activity.isPersisted()' } Editing {{ activities_ctrl.form_activity.name }} [{{ activities_ctrl.form_activity.id }}]
 
   %h3.ui.header{ 'ng-hide': 'activities_ctrl.form_activity.isPersisted()' } Creating Activity

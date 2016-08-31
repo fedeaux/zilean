@@ -19,10 +19,10 @@ RSpec.describe 'Activity Requests', type: :request do
         json_response = JSON.parse response.body
 
         expect(json_response.length).to eq 1
-        expect(json_response[0]['name']).to eq 'Work'
+        expect(json_response['activities'][0]['name']).to eq 'Work'
 
-        expect(json_response[0]['children'].length).to eq 2
-        expect(json_response[0]['children'][0]['name']).not_to eq nil
+        expect(json_response['activities'][0]['children'].length).to eq 2
+        expect(json_response['activities'][0]['children'][0]['name']).not_to eq nil
       end
     end
   end
