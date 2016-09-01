@@ -3,14 +3,25 @@ class LogEntry < ApplicationRecord
   belongs_to :activity
 
   def trim(log_entry)
+    affected_log_entries = []
+
     if started_at < log_entry.started_at and finished_at > log_entry.finished_at
-      raise "Trying to trim based on a log_entry that is contained on this log_entry"
+      new_log_entry = LogEntry.new attributes.except('id')
+      new_log_entry.started_at = log_entry.finished_at
+
+      new_log_entry.save if persisted?
+      affected_log_entries << new_log_entry
+
+      self.finished_at = log_entry.started_at
+      affected_log_entries << self
 
     elsif started_at < log_entry.started_at and finished_at > log_entry.started_at
       self.finished_at = log_entry.started_at
+      affected_log_entries << self
 
     elsif started_at > log_entry.started_at and log_entry.started_at < finished_at
       self.started_at = log_entry.finished_at
+      affected_log_entries << self
     end
 
     if started_at >= finished_at
@@ -18,6 +29,8 @@ class LogEntry < ApplicationRecord
     elsif persisted?
       save
     end
+
+    affected_log_entries
   end
 
   def colliding_log_entries
