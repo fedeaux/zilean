@@ -1,0 +1,17 @@
+= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {class: 'ui form'}, validate: true) do |f|
+  .ui.three.column.centered.doubling.stackable.grid
+    .column
+      .ui.segment
+        %h2.ui.dividing.header= t('actions.sign_in')
+        .field
+          = f.email_field :email, autofocus: true, placeholder: t('users.email')
+        .field
+          = f.password_field :password, autocomplete: "off", placeholder: t('users.password')
+
+        .field
+          = f.password_field :password_confirmation, autocomplete: "off", placeholder: t('users.password_confirmation')
+
+        .field
+          = f.submit t('actions.sign_up'), class: 'ui button primary'
+
+        = link_to t('actions.sign_in'), new_session_path(resource_name)

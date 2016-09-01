@@ -1,0 +1,28 @@
+.color-bubble
+  border-radius: 1em
+  display: inline-block
+  height: 0.8em
+  width: 0.8em
+
+.activity-list-item
+  &:hover > div > .activity-title
+    +border-radius(0.2em)
+    background-color: rgba(0, 0, 0, 0.2)
+
+    .actions
+      display: inline
+      float: right
+
+      i
+        cursor: pointer
+
+  .activity-list-item
+    padding-left: 1em
+    margin: 0.4em 0
+
+  .activity-title
+    padding: 0.1em 0.4em
+    margin: 0 !important
+
+    .actions
+      display: none

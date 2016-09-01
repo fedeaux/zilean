@@ -1,0 +1,14 @@
+.ui.three.column.centered.doubling.stackable.grid
+  .column
+    .ui.segment
+      %h4.ui.dividing.header= t 'devise.sessions.forgot_your_password'
+
+      = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'ui form' }, validade: true) do |f|
+        = devise_error_messages!
+        .field
+          = f.label :email
+          = f.email_field :email, autofocus: true
+        .actions
+          = f.submit t('devise.passwords.send_me_instructions'), class: 'ui primary button'
+
+      = render "devise/shared/links"

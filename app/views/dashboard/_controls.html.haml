@@ -1,0 +1,10 @@
+#dashboard-controls
+  .ui.dropdown.link#components-menu-item
+    .text Components
+    %i.dropdown.icon
+
+    .ui.menu
+      .item{ 'ng-repeat': '(id, component) in dashboard_ctrl.components',
+             'ng-class': '{ "active" : component.visible }',
+             'ng-click': 'dashboard_ctrl.toggleComponentVisibility(id)',
+             'ng-attr-id': '{{ id }}-sub-menu-item'} {{ component.title }}
