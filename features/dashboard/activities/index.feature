@@ -15,7 +15,27 @@ Scenario: Creating an Activity with no previous activities
   Then I should see an activity list item
 
 Scenario: Creating an Activity with no parent but with previous activities registered
-  Given Some activities exist
-  When I fill the activity form for the activities component with name: Work
+  Given These activities exist
+    | id | name      | color   | parent_id |
+    | 18 | Work      | black   |           |
+    | 19 | Office    | black   | 18        |
+    | 20 | Home      | #0000ff | 18        |
+    | 21 | Fun       | #ff0080 |           |
+    | 22 | Gaming    | #ff0080 | 21        |
+    | 23 | Badminton | #ff0080 | 21        |
+  When I fill the activity form for the activities component with name: Chores
+   And I click on the create activity button
+  Then I should see an activity list item
+
+Scenario: Creating an Activity with parent
+  Given These activities exist
+    | id | name      | color   | parent_id |
+    | 18 | Work      | black   |           |
+    | 19 | Office    | black   | 18        |
+    | 20 | Home      | #0000ff | 18        |
+    | 21 | Fun       | #ff0080 |           |
+    | 22 | Gaming    | #ff0080 | 21        |
+    | 23 | Badminton | #ff0080 | 21        |
+  When I fill the activity form for the activities component with name: Disco, parent: Fun
    And I click on the create activity button
   Then I should see an activity list item

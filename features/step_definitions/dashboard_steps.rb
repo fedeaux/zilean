@@ -6,7 +6,7 @@ When(/^I am on the dashboard$/) do
   visit '/'
 end
 
-Then(/^I should see (the|an|a) (.+)$/) do |type, element|
+Then(/^I should see (the|an|a|\d+) (.+)$/) do |type, element|
   expect(page).to have_css dom_element_selector(element, type: type)
 end
 

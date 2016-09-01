@@ -34,9 +34,7 @@ module FeatureHelpers
   end
 
   def fill_field_with(field, value)
-    if field.tag_name == 'input'
-      field.set value
-    end
+    field.set value
   end
 end
 
