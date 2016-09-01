@@ -6,5 +6,6 @@ Rails.application.routes.draw do
     resources :activities
   end
 
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  get 'templates/*name' => "dashboard#template"
+  root 'dashboard#index'
 end
