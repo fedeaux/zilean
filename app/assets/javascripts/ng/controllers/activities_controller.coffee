@@ -1,7 +1,6 @@
 class ActivitiesController
-  @componentName: 'activities'
   @defaultArgs: ->
-    {}
+    name: 'activities'
 
   constructor: (@$scope, @ResourceService, @Activity) ->
     window.activities_ctrl = @

@@ -1,8 +1,9 @@
 class LogEntriesController
-  @componentName: 'log_entries'
   @defaultArgs: ->
-    target_day_id = moment().format DateFormats.db_day
+    @argsFor moment().format DateFormats.db_day
 
+  @argsFor: (target_day_id) ->
+    name: 'log_entries'
     day: target_day_id
     component_id: @componentIdFor target_day_id
 
@@ -16,8 +17,24 @@ class LogEntriesController
     @target_day = moment @target_day_id
     @setComponentInfo()
     @$scope.$emit 'Dashboard:Register', @component
+    @setAuxiliarDates()
+
     # @service = new @ResourceService @serverErrorHandler, 'log_entry', 'log_entries'
     # @loadLogEntries()
+
+  setAuxiliarDates: ->
+    prev_day = @target_day.clone().subtract 1, 'day'
+    next_day = @target_day.clone().add 1, 'day'
+
+    @prev_day =
+      date: prev_day
+      formatted: prev_day.format(DateFormats.pretty_day)
+      db: prev_day.format(DateFormats.db_day)
+
+    @next_day =
+      date: next_day
+      formatted: next_day.format(DateFormats.pretty_day)
+      db: next_day.format(DateFormats.db_day)
 
   loadLogEntries: (force = false) ->
     @log_entries ?= {}
@@ -69,6 +86,9 @@ class LogEntriesController
     @original_form_log_entry = null
 
   serverErrorHandler: ->
+
+  loadNew: (target_day_id) ->
+    @$scope.$emit 'Dashboard:Insert', LogEntriesController.argsFor(target_day_id)
 
 LogEntriesController.$inject = ['$scope', 'ResourceService', 'LogEntry']
 angular.module('ZileanApp').controller 'LogEntriesController', LogEntriesController
