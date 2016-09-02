@@ -1,9 +1,23 @@
 class LogEntriesController
+  @componentName: 'log_entries'
+  @defaultArgs: ->
+    target_day_id = moment().format DateFormats.db_day
+
+    day: target_day_id
+    component_id: @componentIdFor target_day_id
+
+  @componentIdFor: (target_day_id) ->
+    "log-entries-#{target_day_id}"
+
   constructor: (@$scope, @ResourceService, @LogEntry) ->
     window.log_entries_ctrl = @
+
+  init: (@target_day_id) ->
+    @target_day = moment @target_day_id
+    @setComponentInfo()
     @$scope.$emit 'Dashboard:Register', @component
-    @service = new @ResourceService @serverErrorHandler, 'log_entry', 'log_entries'
-    @loadLogEntries()
+    # @service = new @ResourceService @serverErrorHandler, 'log_entry', 'log_entries'
+    # @loadLogEntries()
 
   loadLogEntries: (force = false) ->
     @log_entries ?= {}
@@ -16,11 +30,6 @@ class LogEntriesController
       @updateAuxiliarLogEntries()
 
   updateAuxiliarLogEntries: ->
-    # @displayable_log_entries = (log_entry for id, log_entry of @log_entries)
-    # @all_log_entries = [].concat.apply([], (log_entry.withChildren() for id, log_entry of @log_entries))
-
-    # @log_entries_as_options = angular.copy @all_log_entries
-    # @log_entries_as_options.unshift { breadcrumbs_path_names: '[none]', id: null }
 
   setFormLogEntry: (log_entry) ->
     @form_log_entry = log_entry
@@ -28,11 +37,12 @@ class LogEntriesController
     if @form_log_entry.isPersisted()
       @original_form_log_entry = angular.copy log_entry
 
-  component:
-    id: 'log_entries',
-    title: 'Log',
-    visible: true
-    size: 'triple'
+  setComponentInfo: ->
+    @component =
+      id: LogEntriesController.componentIdFor(@target_day_id),
+      title: @target_day.format(DateFormats.pretty_day),
+      visible: true
+      size: 'triple'
 
   saveLogEntry: ->
     if @form_log_entry.isPersisted()
@@ -62,3 +72,4 @@ class LogEntriesController
 
 LogEntriesController.$inject = ['$scope', 'ResourceService', 'LogEntry']
 angular.module('ZileanApp').controller 'LogEntriesController', LogEntriesController
+AvailableComponents.push LogEntriesController

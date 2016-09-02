@@ -1,8 +1,20 @@
 class DashboardController
-  constructor: (@scope) ->
+  constructor: (@scope, @compile) ->
     window.dashboard_ctrl = @
     @components = {}
     @scope.$on 'Dashboard:Register', @registerComponent
+
+    @initializeComponents()
+
+  insertComponent: (component_name, parameters = {}) ->
+    node = document.createElement 'div'
+    attr = document.createAttribute 'dashboard-component'
+    parameters['component'] = component_name
+    parameters['component_id'] ?= component_name
+
+    attr.value = jQuery.param parameters
+    node.setAttributeNode attr
+    $('#dashboard-wrapper').append @compile(node)(@scope)
 
   registerComponent: (event, component) =>
     @components[component['id']] = component
@@ -11,5 +23,9 @@ class DashboardController
     if @components[component_id]
       @components[component_id].visible = !@components[component_id].visible
 
-DashboardController.$inject = ['$scope']
+  initializeComponents: ->
+    for component in AvailableComponents
+      @insertComponent component.componentName, component.defaultArgs()
+
+DashboardController.$inject = ['$scope', '$compile']
 angular.module('ZileanApp').controller 'DashboardController', DashboardController
