@@ -19,7 +19,7 @@ class DashboardController
 
     attr.value = jQuery.param parameters
     node.setAttributeNode attr
-    $('#dashboard-wrapper').append @compile(node)(@scope)
+    $('#dashboard-wrapper-anchor').append @compile(node)(@scope)
 
   registerComponent: (event, component) =>
     @components[component['id']] = component
