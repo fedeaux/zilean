@@ -32,6 +32,7 @@ class LogEntriesController
     id: 'log_entries',
     title: 'Log',
     visible: true
+    size: 'triple'
 
   saveLogEntry: ->
     if @form_log_entry.isPersisted()
