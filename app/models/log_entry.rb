@@ -2,6 +2,22 @@ class LogEntry < ApplicationRecord
   belongs_to :user
   belongs_to :activity
 
+  scope :today, -> {
+    on_day Time.current
+  }
+
+  scope :on_day, -> (day = Time.current) {
+    start = day.in_time_zone(Time.zone).beginning_of_day
+    finish = day.in_time_zone(Time.zone).end_of_day
+
+    on_period start, finish
+  }
+
+  scope :on_period, -> (start, finish) {
+    where("(started_at >= :start AND started_at < :finish) OR
+           (finished_at > :start AND finished_at < :finish)", start: start, finish: finish)
+  }
+
   def self.create(attributes)
     new_log_entry = LogEntry.new attributes
     collisions = new_log_entry.colliding_log_entries
