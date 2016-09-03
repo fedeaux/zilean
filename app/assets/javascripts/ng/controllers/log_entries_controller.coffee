@@ -63,8 +63,16 @@ class LogEntriesController
   saveLogEntries: ->
     @service.createMultiple @table.segments, @saveLogEntryCallback
 
+  deleteLogEntry: (log_entry) ->
+    @service.delete log_entry, @deleteLogEntryCallback
+
   saveLogEntryCallback: (data) =>
     @loadLogEntries true
+
+  deleteLogEntryCallback: (data) =>
+    delete @log_entries[data.log_entry.id]
+    @updateAuxiliarLogEntries()
+    @table.assign_log_entries_to_cells()
 
   serverErrorHandler: ->
 

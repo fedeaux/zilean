@@ -28,7 +28,7 @@ class Api::LogEntriesController < Api::BaseController
 
   def destroy
     @log_entry.destroy
-    render nothing: true
+    render :show
   end
 
   private
