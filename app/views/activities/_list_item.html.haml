@@ -3,8 +3,8 @@
   {{ activity.name }}
 
   .actions
-    %i.small.edit.icon{ 'ng-click': 'activities_ctrl.setFormActivity(activity)' }
-    %i.small.eye.icon
+    %i.small.edit.icon.action{ 'ng-click': 'activities_ctrl.setFormActivity(activity)' }
+    %i.small.eye.icon.action
 
 .activity-list-item{ 'ng-repeat': 'activity in activity.children' }
   %div{ 'data-activity-list-item': true  }

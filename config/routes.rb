@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: 'json' } do
     resources :activities
+    resources :log_entries
   end
 
   get 'templates/*name' => "dashboard#template"
