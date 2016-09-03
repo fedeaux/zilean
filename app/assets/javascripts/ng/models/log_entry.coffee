@@ -10,13 +10,21 @@ angular.module('ZileanApp').factory 'LogEntry', ($resource) ->
         else
           @[name] = default_value
 
+      @parseDateFields()
+
     isPersisted: ->
       !! @id
+
+    parseDateFields: ->
+      @started_at = moment @started_at
+      @finished_at = moment @finished_at
 
     defaultAttributes: (update) ->
       attr =
         id: null
         duration: null
+        started_at: null
+        finished_at: null
         activity: {}
 
       attr

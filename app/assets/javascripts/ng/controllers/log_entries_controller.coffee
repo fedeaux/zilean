@@ -15,11 +15,12 @@ class LogEntriesController
 
   init: (@target_day_id) ->
     @target_day = moment @target_day_id
+    @setAuxiliarDates()
+    @service = new @LogEntryService @serverErrorHandler, 'log_entry', 'log_entries'
+
     @setComponentInfo()
     @$scope.$emit 'Dashboard:Register', @component
-    @setAuxiliarDates()
 
-    @service = new @LogEntryService @serverErrorHandler, 'log_entry', 'log_entries'
     @loadLogEntries()
 
   setAuxiliarDates: ->
@@ -45,6 +46,9 @@ class LogEntriesController
         @log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
 
       @updateAuxiliarLogEntries()
+
+      @table = new LogTable.Table $('#daily-log-table'), @log_entries,
+        resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day
 
   updateAuxiliarLogEntries: ->
     @log_entries_as_array = (log_entry for id, log_entry of @log_entries)
