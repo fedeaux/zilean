@@ -40,8 +40,10 @@ response.each do |data|
   end
 
   data['log_entries'].each do |log_entry_attr|
-    log_entry_attr['user_id'] = @user.id
-    log_entry_attr['activity_id'] = @activity_map[log_entry_attr['activity_id']].id
-    log_entry = LogEntry.create log_entry_attr
+    if @activity_map[log_entry_attr['activity_id']]
+      log_entry_attr['user_id'] = @user.id
+      log_entry_attr['activity_id'] = @activity_map[log_entry_attr['activity_id']].id
+      log_entry = LogEntry.create log_entry_attr
+    end
   end
 end
