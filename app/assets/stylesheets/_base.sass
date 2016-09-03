@@ -1,2 +1,9 @@
-.action
-  cursor: pointer
+.element-with-action
+  background-color: rgba(slategray, 0.2)
+
+  .action
+    +opacity(0.5)
+    cursor: pointer
+
+    &:hover
+      +opacity(1)

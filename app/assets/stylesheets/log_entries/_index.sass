@@ -1,10 +1,11 @@
 $cell-width: 48px
-$day-table-width: $cell-width * 7
+$day-table-width: $cell-width * 6.4
 
-.log-entry-list, .table-selection
-  display: inline-block
-  float: left
-  margin-left: $cell-width / 2
+.component-body
+
+.log-entry-and-table-selection-wrapper
+  overflow: hidden
+  padding-left: $cell-width / 3
 
 .log-entry-list
   .log-entry
@@ -17,7 +18,7 @@ $day-table-width: $cell-width * 7
   .log-entry-wrapper
     &:hover, &.focused
       .log-entry
-        background-color: rgba(slategray, 0.2)
+        @extend .element-with-action
 
       .actions
         display: inline

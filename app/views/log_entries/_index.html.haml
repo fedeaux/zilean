@@ -1,6 +1,8 @@
 .component-body
   = render 'log_entries/table/index'
-  = render 'log_entries/list'
-  = render 'log_entries/table/selection'
+
+  .log-entry-and-table-selection-wrapper
+    = render 'log_entries/list'
+    = render 'log_entries/table/selection'
 
   .ui.clearing.hidden.fitted.divider
