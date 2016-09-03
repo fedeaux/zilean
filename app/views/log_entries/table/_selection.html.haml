@@ -1,0 +1,22 @@
+.table-selection#table-selection{ 'ng-show': 'log_entries_ctrl.table.segments.length > 0' }
+  %p {{ log_entries_ctrl.table.number_of_selected_cells() }} selected cells. ( {{ log_entries_ctrl.table.time_of_selected_cells() | elapsed }})
+
+  = form_tag '/', class: 'ui form' do
+    .div{ ng: { repeat: 'segment in log_entries_ctrl.table.segments' } }
+      .ui.fluid.mini.steps
+        .step
+          .title {{ segment.started_at.format('HH:mm') }}
+        .step
+          .title {{ segment.finished_at.format('HH:mm') }}
+
+      .ui.field
+        = collection_select(:log_entry, :activity_id, current_user.activities, :id, :name, { prompt: true }, class: 'ui fluid search selection dropdown', 'ng-model': 'segment.activity.id')
+
+      .ui.field
+        = text_area(:log_entry, :observations, 'ng-model': 'segment.observations')
+
+      .ui.divider
+
+    .ui.small.buttons
+      .ui.primary.button{ 'ng-click': 'log_entries_ctrl.saveLogEntries()' } Save
+      .ui.basic.button{ 'ng-click': 'log_entries_ctrl.table.clear_selection()' } Cancel

@@ -50,6 +50,10 @@ class LogEntry < ApplicationRecord
     affected_log_entries
   end
 
+  def duration
+    finished_at - started_at
+  end
+
   def mergeable?(log_entry)
     activity.id == log_entry.activity.id and
       user.id == log_entry.user.id and

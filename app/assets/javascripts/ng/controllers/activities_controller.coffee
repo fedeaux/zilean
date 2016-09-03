@@ -1,4 +1,7 @@
 class ActivitiesController
+  @defaultArgs: ->
+    name: 'activities'
+
   constructor: (@$scope, @ResourceService, @Activity) ->
     window.activities_ctrl = @
     @$scope.$emit 'Dashboard:Register', @component
@@ -61,3 +64,4 @@ class ActivitiesController
 
 ActivitiesController.$inject = ['$scope', 'ResourceService', 'Activity']
 angular.module('ZileanApp').controller 'ActivitiesController', ActivitiesController
+AvailableComponents.push ActivitiesController
