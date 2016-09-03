@@ -1,4 +1,4 @@
-.log-entry-list
+.log-entry-list{ 'ng-hide': 'log_entries_ctrl.table.segments.length > 0' }
   .log-entry-wrapper{ ng: { repeat: "log_entry in log_entries_ctrl.log_entries_as_array | orderBy: 'started_at'", class: "{'focused': log_entries_ctrl.table.focused_log_entry.id == log_entry.id}" }}
     .log-entry
       .color-bubble{ 'ng-style': "{ 'background-color': log_entry.activity.color }"}

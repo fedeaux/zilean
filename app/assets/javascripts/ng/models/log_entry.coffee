@@ -23,6 +23,7 @@ angular.module('ZileanApp').factory 'LogEntry', ($resource) ->
       attr =
         id: null
         duration: null
+        observations: null
         started_at: null
         finished_at: null
         activity: {}
@@ -35,7 +36,7 @@ angular.module('ZileanApp').factory 'LogEntry', ($resource) ->
       for name, default_value of @defaultAttributes(true)
         attr[name] = @[name]
 
-      if @parent
-        attr.parent_id = @parent.id
+      if @activity
+        attr.activity_id = @activity.id
 
       attr

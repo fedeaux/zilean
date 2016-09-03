@@ -1,7 +1,7 @@
 @LogTable ||= {}
 
 class LogTable.Table
-  constructor: (@table, @log_entries, @options) ->
+  constructor: (@table, @log_entries, @LogEntry, @options) ->
     @initialize_cells()
     @sequential_selector = new LogTable.Selectors.Sequential @
 
@@ -33,7 +33,7 @@ class LogTable.Table
     $('body').mouseup @handle_mouseup
 
     @header = $ '.header', @table
-    @header.click @clear_current_selection
+    @header.click @clear_selection
 
   cell: (row_or_cell_element, column = null) ->
     if column != null
@@ -70,24 +70,24 @@ class LogTable.Table
       finish_date.add @options.resolution, 'minutes'
 
       unless current_segment and current_segment.finished_at.isSame cell.date
-        current_segment = { started_at: cell.date, finished_at: finish_date, overlapping_log_entries_ids: [] }
+        current_segment = new @LogEntry { started_at: cell.date, finished_at: finish_date }
 
         @segments.push current_segment
 
       else
         current_segment.finished_at = finish_date
 
-      if cell.log_entry and !(cell.log_entry.id in current_segment.overlapping_log_entries_ids)
-        current_segment.overlapping_log_entries_ids.push cell.log_entry.id
-
   current_selection: ->
     cell for cell in @cells when cell.selected
 
-  clear_current_selection: =>
+  clear_selection: =>
     cell.unselect() for cell in @current_selection()
 
   number_of_selected_cells: ->
     @current_selection().length
+
+  time_of_selected_cells: ->
+    @number_of_selected_cells() * @options.resolution
 
   selected_time: ->
     @current_selection().length * @options.resolution
@@ -104,7 +104,7 @@ class LogTable.Table
       @selector = @sequential_selector
       @selector.set_initial_cell cell
 
-    @clear_current_selection() unless $event.shiftKey
+    @clear_selection() unless $event.shiftKey
     cell.select()
 
   handle_mouseenter: ($event, cell) =>

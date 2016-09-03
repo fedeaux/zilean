@@ -10,11 +10,20 @@ class Api::LogEntriesController < Api::BaseController
   end
 
   def create
-    create_params = log_entry_params
-    create_params[:user] = current_user
+    create_params = []
 
-    @log_entries = Log_Entry.create create_params
-    render :index
+    if params[:log_entry].any?
+      create_params = [log_entry_params]
+    elsif params[:log_entries].any?
+      create_params = log_entries_params[:log_entries]
+    end
+
+    create_params.each do |log_entry_attributes|
+      log_entry_attributes[:user] = current_user
+      LogEntry.create log_entry_attributes
+    end
+
+    head 200
   end
 
   def destroy
@@ -30,6 +39,10 @@ class Api::LogEntriesController < Api::BaseController
 
   # Only allow a trusted parameter "white list" through.
   def log_entry_params
-    params.require(:log_entry).permit(:name, :color, :parent_id)
+    params.require(:log_entry).permit(:name, :activity_id, :observations, :started_at, :finished_at)
+  end
+
+  def log_entries_params
+    params.permit(log_entries: [:name, :activity_id, :observations, :started_at, :finished_at])
   end
 end

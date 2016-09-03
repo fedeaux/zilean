@@ -47,17 +47,11 @@ class LogEntriesController
 
       @updateAuxiliarLogEntries()
 
-      @table = new LogTable.Table $('#daily-log-table'), @log_entries,
+      @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
         resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day
 
   updateAuxiliarLogEntries: ->
     @log_entries_as_array = (log_entry for id, log_entry of @log_entries)
-
-  setFormLogEntry: (log_entry) ->
-    @form_log_entry = log_entry
-
-    if @form_log_entry.isPersisted()
-      @original_form_log_entry = angular.copy log_entry
 
   setComponentInfo: ->
     @component =
@@ -66,29 +60,11 @@ class LogEntriesController
       visible: true
       size: 'triple'
 
-  saveLogEntry: ->
-    if @form_log_entry.isPersisted()
-      @service.update @form_log_entry, @saveLogEntryCallback
-    else
-      @service.create @form_log_entry, @saveLogEntryCallback
-
-    @resetFormLogEntry()
+  saveLogEntries: ->
+    @service.createMultiple @table.segments, @saveLogEntryCallback
 
   saveLogEntryCallback: (data) =>
     @loadLogEntries true
-
-  cancelEditLogEntry: ->
-    if @original_form_log_entry
-      @form_log_entry.setAttributes @original_form_log_entry, true
-
-    @resetFormLogEntry()
-
-  setBlankFormLogEntry: ->
-    @setFormLogEntry new @LogEntry
-
-  resetFormLogEntry: ->
-    @form_log_entry = null
-    @original_form_log_entry = null
 
   serverErrorHandler: ->
 
