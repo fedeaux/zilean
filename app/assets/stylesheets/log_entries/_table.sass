@@ -1,0 +1,89 @@
+$default-border: thin solid rgba(34, 36, 38, 0.15)
+$selection-border: 2px blue solid
+
+.log-entries-table
+  +user-select(none)
+  display: inline-block
+  width: $day-table-width
+  float: left
+
+  .cell
+    width: $cell-width
+    float: left
+    cursor: pointer
+
+  .header
+    .cell
+      padding: 0.2em 1em
+      font-size: 0.8em
+      text-align: center
+
+  .body
+    .cell
+      font-size: 8px
+      line-height: 10px
+      vertical-align: middle
+      height: 12px
+      text-align: center
+      border-bottom: $default-border
+      border-right: $default-border
+
+  &.daily-log
+    width: $cell-width * 6
+
+    .header
+      .cell
+        width: $cell-width * 6
+
+    .body
+      .cell
+
+        &:nth-child(-n + 6)
+          border-top: $default-border
+
+        &:nth-child(6n + 1)
+          border-left: $default-border
+
+  &.weekly-log
+    width: $cell-width * 7
+
+    .header
+      .cell
+        &.master
+          width: $cell-width * 7
+
+    .body
+      .cell
+        &:nth-child(7n + 1)
+          border-left: $default-border
+
+        &:nth-child(-n + 7)
+          border-top: $default-border
+
+  &.yearly-log
+    width: 365px
+
+    .body
+      .cell
+        height: 1px
+        width: 1px
+        border: none
+
+  .body
+    .cell
+      &.now
+
+      &.selected
+        font-weight: bold
+
+      &.right-selection-border
+        border-right: $selection-border
+
+      &.bottom-selection-border
+        border-bottom: $selection-border
+
+      &.left-selection-border
+        border-left: $selection-border !important
+
+      &.top-selection-border
+        border-top: $selection-border !important

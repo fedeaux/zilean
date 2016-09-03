@@ -1,0 +1,38 @@
+$cell-width: 48px
+$day-table-width: $cell-width * 6.4
+
+.component-body
+
+.log-entry-and-table-selection-wrapper
+  overflow: hidden
+  padding-left: $cell-width / 3
+
+.log-entry-list
+  .log-entry
+    position: relative
+    margin-bottom: 1px
+
+    .actions, .details
+      display: none
+
+  .log-entry-wrapper
+    &:hover, &.focused
+      .log-entry
+        @extend .element-with-action
+
+      .actions
+        display: inline
+        position: absolute
+        top: 0
+        right: 0
+
+        .log-entry-id
+          display: inline-block
+          font-size: 0.7em
+          height: 100%
+
+      .details
+        display: block
+        font-size: 0.8em
+        margin: 0
+        padding-left: 0.5em
