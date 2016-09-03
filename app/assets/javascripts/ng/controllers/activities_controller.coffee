@@ -64,4 +64,4 @@ class ActivitiesController
 
 ActivitiesController.$inject = ['$scope', 'ResourceService', 'Activity']
 angular.module('ZileanApp').controller 'ActivitiesController', ActivitiesController
-AvailableComponents.push ActivitiesController
+# AvailableComponents.push ActivitiesController

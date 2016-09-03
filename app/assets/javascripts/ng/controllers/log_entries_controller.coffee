@@ -10,7 +10,7 @@ class LogEntriesController
   @componentIdFor: (target_day_id) ->
     "log-entries-#{target_day_id}"
 
-  constructor: (@$scope, @ResourceService, @LogEntry) ->
+  constructor: (@$scope, @LogEntryService, @LogEntry) ->
     window.log_entries_ctrl = @
 
   init: (@target_day_id) ->
@@ -19,8 +19,8 @@ class LogEntriesController
     @$scope.$emit 'Dashboard:Register', @component
     @setAuxiliarDates()
 
-    # @service = new @ResourceService @serverErrorHandler, 'log_entry', 'log_entries'
-    # @loadLogEntries()
+    @service = new @LogEntryService @serverErrorHandler, 'log_entry', 'log_entries'
+    @loadLogEntries()
 
   setAuxiliarDates: ->
     prev_day = @target_day.clone().subtract 1, 'day'
@@ -40,13 +40,14 @@ class LogEntriesController
     @log_entries ?= {}
     @log_entries = {} if force
 
-    @service.index (data) =>
+    @service.day @target_day_id, (data) =>
       for log_entry_attr in data['log_entries']
         @log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
 
       @updateAuxiliarLogEntries()
 
   updateAuxiliarLogEntries: ->
+    @log_entries_as_array = (log_entry for id, log_entry of @log_entries)
 
   setFormLogEntry: (log_entry) ->
     @form_log_entry = log_entry
@@ -90,6 +91,6 @@ class LogEntriesController
   loadNew: (target_day_id) ->
     @$scope.$emit 'Dashboard:Insert', LogEntriesController.argsFor(target_day_id)
 
-LogEntriesController.$inject = ['$scope', 'ResourceService', 'LogEntry']
+LogEntriesController.$inject = ['$scope', 'LogEntryService', 'LogEntry']
 angular.module('ZileanApp').controller 'LogEntriesController', LogEntriesController
 AvailableComponents.push LogEntriesController

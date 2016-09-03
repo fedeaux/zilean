@@ -2,7 +2,11 @@ class Api::LogEntriesController < Api::BaseController
   before_action :set_log_entry, only: [:destroy]
 
   def index
-    @log_entries = current_user.log_entries
+    if params[:day]
+      @log_entries = current_user.log_entries.on_day Time.parse(params[:day]).in_time_zone(Time.zone).beginning_of_day
+    else
+      @log_entries = current_user.log_entries.today
+    end
   end
 
   def create

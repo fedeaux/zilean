@@ -16,6 +16,8 @@ angular.module('ZileanApp').factory 'LogEntry', ($resource) ->
     defaultAttributes: (update) ->
       attr =
         id: null
+        duration: null
+        activity: {}
 
       attr
 
