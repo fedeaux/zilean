@@ -3,7 +3,7 @@ class Api::LogEntriesController < Api::BaseController
 
   def index
     if params[:day]
-      @log_entries = current_user.log_entries.on_day Time.parse(params[:day]).in_time_zone(Time.zone).beginning_of_day
+      @log_entries = current_user.log_entries.on_day Time.parse(params[:day])
     else
       @log_entries = current_user.log_entries.today
     end
