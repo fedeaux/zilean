@@ -19,7 +19,7 @@ response.each do |data|
 
     current_parent = nil
     parts.each_with_index do |slug, index|
-      a = Activity.find_or_initialize_by slug: slug
+      a = Activity.find_or_initialize_by slug: slug, user_id: @user.id
 
       if index < parts.length - 1
         a.name = slug.titleize unless a.name
@@ -30,7 +30,6 @@ response.each do |data|
       end
 
       a.parent = current_parent
-      a.user = @user
       a.save
 
       ap a.errors.inspect unless a.valid?
