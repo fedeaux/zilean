@@ -58,7 +58,8 @@ class LogEntriesController
       id: LogEntriesController.componentIdFor(@target_day_id),
       title: @target_day.format(DateFormats.pretty_day),
       visible: true
-      size: 'triple'
+      removable: moment().format(DateFormats.db_day) != @target_day_id
+      size: 'double'
       component: @
 
   saveLogEntries: ->

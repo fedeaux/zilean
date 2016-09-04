@@ -1,0 +1,1 @@
+= select @template_params[:object_name], @template_params[:field_name], [], {}, { 'ng-model': "#{@template_params[:ng_model]}", 'ng-options': "option.breadcrumbs_path_names for option in dashboard_ctrl.shared_data.activities_select_options track by option.id*1", class: 'ui search selection fluid dropdown' }

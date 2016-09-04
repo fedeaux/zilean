@@ -1,9 +1,20 @@
+=opacity($opacity, $important: no)
+  @if $important == important
+    opacity: $opacity !important
+    $opacity-ie: $opacity * 100
+    filter: alpha(opacity=$opacity-ie) !important //IE8
+
+  @else
+    opacity: $opacity
+    $opacity-ie: $opacity * 100
+    filter: alpha(opacity=$opacity-ie) //IE8
+
 .element-with-action
   background-color: rgba(slategray, 0.2)
 
-  .action
-    +opacity(0.5)
-    cursor: pointer
+.action
+  +opacity(0.5, important)
+  cursor: pointer
 
-    &:hover
-      +opacity(1)
+  &:hover
+    +opacity(1, important)
