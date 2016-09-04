@@ -6,4 +6,5 @@
 
     .actions
       %i.small.close.icon.action.close-button{ 'ng-click': "dashboard_ctrl.toggleComponentVisibility('#{component_id}')" }
-      %i.small.trash.icon.action.destroy-button{ 'ng-show': "dashboard_ctrl.components['#{component_id}'].removable" }
+      %i.small.trash.icon.action.destroy-button{ 'ng-show': "dashboard_ctrl.components['#{component_id}'].removable",
+                                                 'ng-click': "dashboard_ctrl.removeComponent('#{component_id}')"}
