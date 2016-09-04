@@ -10,7 +10,9 @@
           .title {{ segment.finished_at.format('HH:mm') }}
 
       .ui.field
-        = select :log_entry, :activity_id, [], {}, { 'ng-model': 'segment.activity', 'ng-options': "option.breadcrumbs_path_names for option in dashboard_ctrl.shared_data.activities_select_options track by option.id*1" }
+        %div{ activity_picker: { object_name: :log_entry,
+              field_name: :activity_id,
+              ng_model: 'segment.activity' }.to_json }
 
       .ui.field
         = text_area(:log_entry, :observations, 'ng-model': 'segment.observations')
