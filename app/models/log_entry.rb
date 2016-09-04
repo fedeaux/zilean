@@ -7,16 +7,13 @@ class LogEntry < ApplicationRecord
   }
 
   scope :on_day, -> (day = Time.current) {
-    start = day.beginning_of_day
-    finish = day.end_of_day
+    start = day.beginning_of_day - Time.zone.utc_offset
+    finish = day.end_of_day - Time.zone.utc_offset
 
     on_period start, finish
   }
 
   scope :on_period, -> (start, finish) {
-    start = start.in_time_zone
-    finish = finish.in_time_zone
-
     where("(started_at >= :start AND started_at < :finish) OR
            (finished_at > :start AND finished_at < :finish)", start: start, finish: finish)
   }
