@@ -19,7 +19,7 @@ response.each do |data|
 
     current_parent = nil
     parts.each_with_index do |slug, index|
-      a = Activity.new slug: slug
+      a = Activity.find_or_initialize_by slug: slug
 
       if index < parts.length - 1
         a.name = slug.titleize unless a.name
