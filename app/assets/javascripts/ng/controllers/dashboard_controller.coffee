@@ -2,6 +2,7 @@ class DashboardController
   constructor: (@scope, @compile) ->
     window.dashboard_ctrl = @
     @components = {}
+    @components_nodes = {}
 
     @scope.$on 'Dashboard:Register', @registerComponent
     @scope.$on 'Dashboard:PublishData', @publishData
@@ -26,7 +27,12 @@ class DashboardController
 
     attr.value = jQuery.param parameters
     node.setAttributeNode attr
-    $('#dashboard-components-wrapper').append @compile(node)(@scope)
+    @components_nodes[parameters['component_id']] = @compile(node)(@scope)
+    $('#dashboard-components-wrapper').append @components_nodes[parameters['component_id']]
+
+  removeComponent: (component_id) ->
+    @components_nodes[component_id].remove()
+    delete @components[component_id]
 
   registerComponent: (event, component) =>
     @components[component['id']] = component
