@@ -10,7 +10,7 @@
           .title {{ segment.finished_at.format('HH:mm') }}
 
       .ui.field
-        = select :log_entry, :activity_id, [], {}, { 'ng-model': 'activities_ctrl.form_activity.parent', 'ng-options': "option.breadcrumbs_path_names for option in dashboard_ctrl.shared_data.activities_select_options track by option.id*1" }
+        = select :log_entry, :activity_id, [], {}, { 'ng-model': 'segment.activity', 'ng-options': "option.breadcrumbs_path_names for option in dashboard_ctrl.shared_data.activities_select_options track by option.id*1" }
 
       .ui.field
         = text_area(:log_entry, :observations, 'ng-model': 'segment.observations')
