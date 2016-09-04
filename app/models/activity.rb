@@ -5,6 +5,13 @@ class Activity < ApplicationRecord
   validates_presence_of :name, :slug, :user, :color
   before_validation :infer_slug
   before_validation :infer_color
+  before_save :update_path_names
+  default_scope { order('path_names') }
+  serialize :path_names
+
+  def update_path_names
+    self.path_names = path.map { |activity| activity.name }
+  end
 
   def infer_slug
     unless self.slug
@@ -35,7 +42,7 @@ class Activity < ApplicationRecord
   end
 
   def path_names(join: nil)
-    activities = path.map { |activity| activity.name }
+    activities = super()
     return activities.join join if join
     activities
   end
