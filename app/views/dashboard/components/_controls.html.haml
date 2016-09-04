@@ -5,4 +5,5 @@
     = "{{ dashboard_ctrl.components['#{component_id}'].title }}"
 
     .actions
-      %i.small.close.icon.close-button{ 'ng-click': "dashboard_ctrl.toggleComponentVisibility('#{component_id}')" }
+      %i.small.close.icon.action.close-button{ 'ng-click': "dashboard_ctrl.toggleComponentVisibility('#{component_id}')" }
+      %i.small.trash.icon.action.destroy-button{ 'ng-show': "dashboard_ctrl.components['#{component_id}'].removable" }
