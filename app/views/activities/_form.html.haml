@@ -13,7 +13,7 @@
 
   .field
     = f.label :parent
-    = f.select :parent, [], {}, { 'ng-model': 'activities_ctrl.form_activity.parent', 'ng-options': "option.breadcrumbs_path_names for option in activities_ctrl.activities_as_options track by option.id*1" }
+    = f.select :parent, [], {}, { 'ng-model': 'activities_ctrl.form_activity.parent', 'ng-options': "option.breadcrumbs_path_names for option in dashboard_ctrl.shared_data.activities_select_options track by option.id*1" }
 
   .ui.small.buttons{ 'ng-show': 'activities_ctrl.form_activity.isPersisted()' }
     %submit.ui.primary.button#update-activity-button{ 'ng-click': 'activities_ctrl.saveActivity()' }= t 'actions.update'

@@ -4,6 +4,7 @@ class ActivitiesController
 
   constructor: (@$scope, @ResourceService, @Activity) ->
     window.activities_ctrl = @
+    @setComponentInfo()
     @$scope.$emit 'Dashboard:Register', @component
     @service = new @ResourceService @serverErrorHandler, 'activity', 'activities'
     @loadActivities()
@@ -24,6 +25,7 @@ class ActivitiesController
 
     @activities_as_options = angular.copy @all_activities
     @activities_as_options.unshift { breadcrumbs_path_names: '[none]', id: null }
+    @$scope.$emit 'Dashboard:PublishData', data: { activities_select_options: @activities_as_options }
 
   setFormActivity: (activity) ->
     @form_activity = activity
@@ -31,10 +33,12 @@ class ActivitiesController
     if @form_activity.isPersisted()
       @original_form_activity = angular.copy activity
 
-  component:
-    id: 'activities',
-    title: 'Activities',
-    visible: true
+  setComponentInfo: ->
+    @component =
+      id: 'activities'
+      title: 'Activities'
+      visible: true
+      component: @
 
   saveActivity: ->
     if @form_activity.isPersisted()

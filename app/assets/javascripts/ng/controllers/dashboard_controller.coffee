@@ -4,9 +4,16 @@ class DashboardController
     @components = {}
 
     @scope.$on 'Dashboard:Register', @registerComponent
+    @scope.$on 'Dashboard:PublishData', @publishData
     @scope.$on 'Dashboard:Insert', @insertComponentCallback
 
     @initializeComponents()
+
+  publishData: (event, params) =>
+    @shared_data ?= {}
+
+    for name, data of params.data
+      @shared_data[name] = data
 
   insertComponentCallback: (event, params) =>
     @insertComponent params.name, params

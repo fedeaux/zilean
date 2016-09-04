@@ -59,6 +59,7 @@ class LogEntriesController
       title: @target_day.format(DateFormats.pretty_day),
       visible: true
       size: 'triple'
+      component: @
 
   saveLogEntries: ->
     @service.createMultiple @table.segments, @saveLogEntryCallback

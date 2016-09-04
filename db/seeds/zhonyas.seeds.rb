@@ -1,18 +1,16 @@
 require 'net/http'
 
-# if Rails.env.production?
-  @uri = URI('http://zhonyas.herokuapp.com/digest')
-# else
-#   @uri = URI('http://localhost:3001/digest')
-# end
+@uri = URI('http://zhonyas.herokuapp.com/digest')
 
 response = JSON.parse(Net::HTTP.get(@uri))
+
+LogEntry.destroy_all
+Activity.destroy_all
+ActiveRecord::Base.connection.execute('ALTER SEQUENCE activities_id_seq RESTART WITH 1')
 
 response.each do |data|
   @user = User.find_by email: data['user']['email']
   next unless @user
-  @user.log_entries.destroy_all
-  @user.activities.destroy_all
 
   @activity_map = {}
 
@@ -21,7 +19,7 @@ response.each do |data|
 
     current_parent = nil
     parts.each_with_index do |slug, index|
-      a = @user.activities.where(slug: slug).first_or_initialize
+      a = Activity.new slug: slug
 
       if index < parts.length - 1
         a.name = slug.titleize unless a.name
@@ -34,6 +32,8 @@ response.each do |data|
       a.parent = current_parent
       a.user = @user
       a.save
+
+      ap a.errors.inspect unless a.valid?
       current_parent = a
       @activity_map[activity['id']] = a
     end
@@ -46,4 +46,6 @@ response.each do |data|
       log_entry = LogEntry.create log_entry_attr
     end
   end
+
+  ActiveRecord::Base.connection.execute('ALTER SEQUENCE log_entries_id_seq RESTART WITH 1')
 end
