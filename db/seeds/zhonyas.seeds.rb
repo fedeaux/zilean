@@ -7,6 +7,7 @@ response = JSON.parse(Net::HTTP.get(@uri))
 LogEntry.destroy_all
 Activity.destroy_all
 ActiveRecord::Base.connection.execute('ALTER SEQUENCE activities_id_seq RESTART WITH 1')
+ActiveRecord::Base.connection.execute('ALTER SEQUENCE log_entries_id_seq RESTART WITH 1')
 
 response.each do |data|
   @user = User.find_by email: data['user']['email']
@@ -45,6 +46,4 @@ response.each do |data|
       log_entry = LogEntry.create log_entry_attr
     end
   end
-
-  ActiveRecord::Base.connection.execute('ALTER SEQUENCE log_entries_id_seq RESTART WITH 1')
 end
