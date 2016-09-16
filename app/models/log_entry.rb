@@ -99,19 +99,68 @@ class LogEntry < ApplicationRecord
     end
   end
 
-  def wrapped_by?(log_entry)
-    started_at >= log_entry.started_at and
-      finished_at <= log_entry.finished_at
+  def collision_with(log_entry)
+    if log_entry.started_at < started_at
+      if log_entry.finished_at < started_at
+        false
+
+      elsif log_entry.finished_at == started_at
+        :left
+
+      elsif log_entry.finished_at > started_at
+        if log_entry.finished_at < finished_at
+          :left
+
+        elsif log_entry.finished_at >= finished_at
+          :wrapping
+        end
+      end
+
+    elsif log_entry.started_at == started_at
+      if finished_at <= log_entry.finished_at
+        :wrapping
+
+      else
+        :left
+      end
+
+    elsif log_entry.started_at > started_at and log_entry.started_at < finished_at
+      if log_entry.finished_at < finished_at
+        :wrapped
+
+      elsif log_entry.finished_at >= finished_at
+        :right
+      end
+
+    elsif log_entry.started_at == finished_at
+      :right
+
+    elsif log_entry.started_at > finished_at
+      false
+    end
   end
 
   def trim(log_entry)
     affected_log_entries = []
 
-    if wrapped_by? log_entry
-      affected_log_entries << self
-      destroy
+    collision_type = collision_with log_entry
 
-    elsif started_at < log_entry.started_at and finished_at > log_entry.finished_at
+    if collision_type == :wrapping
+      destroy
+      affected_log_entries << self
+
+    elsif collision_type == :left
+      self.started_at = log_entry.finished_at
+      affected_log_entries << self
+
+    elsif collision_type == :right
+      self.finished_at = log_entry.started_at
+      affected_log_entries << self
+
+    elsif collision_type == :wrapped
+      self.started_at
+
+    elsif collision_type == :proper_wrapped
       new_log_entry = LogEntry.new attributes.except('id')
       new_log_entry.started_at = log_entry.finished_at
 
@@ -120,44 +169,30 @@ class LogEntry < ApplicationRecord
 
       self.finished_at = log_entry.started_at
       affected_log_entries << self
-
-    elsif started_at < log_entry.started_at and finished_at >= log_entry.started_at
-      self.finished_at = log_entry.started_at
-      affected_log_entries << self
-
-    elsif started_at >= log_entry.started_at and log_entry.started_at < finished_at
-      self.started_at = log_entry.finished_at
-      affected_log_entries << self
     end
 
     if persisted?
-      if started_at >= finished_at
-        destroy
-      else
-        save
-      end
+      save
     end
 
     affected_log_entries
   end
 
   def colliding_log_entries
-    {
-      left: user.log_entries.where("started_at < :started_at AND
-                                    finished_at >= :started_at AND
-                                    finished_at <= :finished_at",
-                                    finished_at: finished_at, started_at: started_at).to_a,
+    user.log_entries.where("(started_at >= :started_at AND
+                             started_at <= :finished_at)
 
-      right: user.log_entries.where("finished_at > :finished_at AND
-                                     started_at >= :started_at AND
-                                     started_at <= :finished_at",
-                                     finished_at: finished_at, started_at: started_at).to_a,
+                            OR
 
-      wrapper: user.log_entries.where("started_at < :started_at AND finished_at > :finished_at",
-                                       finished_at: finished_at, started_at: started_at).to_a,
+                            (finished_at >= :started_at AND
+                             finished_at <= :finished_at)
 
-      wrapped: user.log_entries.where("started_at >= :started_at AND finished_at <= :finished_at",
-                                       finished_at: finished_at, started_at: started_at).to_a,
-    }
+                            OR
+
+                            (started_at < :started_at AND
+                             finished_at > :finished_at)
+      ",
+
+      finished_at: finished_at, started_at: started_at).to_a
   end
 end
