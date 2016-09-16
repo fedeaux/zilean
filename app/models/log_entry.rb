@@ -20,24 +20,21 @@ class LogEntry < ApplicationRecord
 
   def self.create(attributes)
     new_log_entry = LogEntry.new attributes
-    collisions = new_log_entry.colliding_log_entries
     affected_log_entries = []
 
-    collisions.each do |collision_type, collided_log_entries|
-      collided_log_entries.each do |collided_log_entry|
-        if collided_log_entry
-          # always reload because log entries can change between iterations
-          collided_log_entry.reload
+    new_log_entry.colliding_log_entries.each do |collided_log_entry|
+      if collided_log_entry
+        # always reload because log entries can change between iterations
+        collided_log_entry.reload
 
-          # first it tries to merge both entries, if it is not possible, just trims the previous entry
-          # anytime a merge succeeds, creating the task is unnecessary
-          if collided_log_entry.merge(new_log_entry)
-            new_log_entry = collided_log_entry
-            affected_log_entries << collided_log_entry
+        # first it tries to merge both entries, if it is not possible, just trims the previous entry
+        # anytime a merge succeeds, creating the task is unnecessary
+        if collided_log_entry.merge(new_log_entry)
+          new_log_entry = collided_log_entry
+          affected_log_entries << collided_log_entry
 
-          else
-            affected_log_entries += collided_log_entry.trim(new_log_entry)
-          end
+        else
+          affected_log_entries += collided_log_entry.trim(new_log_entry)
         end
       end
     end
