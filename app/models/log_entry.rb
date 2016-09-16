@@ -155,9 +155,6 @@ class LogEntry < ApplicationRecord
       affected_log_entries << self
 
     elsif collision_type == :wrapped
-      self.started_at
-
-    elsif collision_type == :proper_wrapped
       new_log_entry = LogEntry.new attributes.except('id')
       new_log_entry.started_at = log_entry.finished_at
 
