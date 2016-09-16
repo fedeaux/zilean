@@ -65,8 +65,7 @@ RSpec.describe LogEntry, type: :model do
         left_log_entry.reload
         right_log_entry.reload
 
-        expect(affected_log_entries).to include left_log_entry
-        expect(affected_log_entries).to include right_log_entry
+        expect(affected_log_entries).to include left_log_entry, right_log_entry
 
         expect(left_log_entry.started_at).to eq time(0)
         expect(left_log_entry.finished_at).to eq time(1)
@@ -87,8 +86,7 @@ RSpec.describe LogEntry, type: :model do
         expect(LogEntry.count).to eq 1
         expect(wrapped_log_entry.started_at).to eq time(0)
         expect(wrapped_log_entry.finished_at).to eq time(5)
-        expect(affected_log_entries).to include wrapped_log_entry
-        expect(affected_log_entries).to include left_log_entry
+        expect(affected_log_entries).to include wrapped_log_entry, left_log_entry
       end
 
       it 'merges the three log entries into one if mergeable wrapped and right collision' do
@@ -103,8 +101,7 @@ RSpec.describe LogEntry, type: :model do
         expect(LogEntry.count).to eq 1
         expect(wrapped_log_entry.started_at).to eq time(1)
         expect(wrapped_log_entry.finished_at).to eq time(10)
-        expect(affected_log_entries).to include wrapped_log_entry
-        expect(affected_log_entries).to include right_log_entry
+        expect(affected_log_entries).to include wrapped_log_entry, right_log_entry
       end
     end
 
@@ -127,11 +124,8 @@ RSpec.describe LogEntry, type: :model do
       affected_log_entries = LogEntry.create log_entry_attributes.merge(started_at: time(1), finished_at: time(9),
         activity: create_or_find_activity(:activity_work_project_x))
 
-      expect(affected_log_entries).to include left_log_entry
-      expect(affected_log_entries).to include wrapped_log_entry_1
-      expect(affected_log_entries).to include wrapped_log_entry_2
-      expect(affected_log_entries).to include wrapped_log_entry_3
-      expect(affected_log_entries).to include right_log_entry
+      expect(affected_log_entries).to include left_log_entry, wrapped_log_entry_1,
+        wrapped_log_entry_2, wrapped_log_entry_3, right_log_entry
 
       wrapped_log_entry_3.reload
       right_log_entry.reload

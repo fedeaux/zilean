@@ -50,6 +50,24 @@ class LogEntry < ApplicationRecord
     affected_log_entries
   end
 
+  def self.crop(start, finish, user)
+    cropping_log_entry = LogEntry.new started_at: start, finished_at: finish, user: user
+    collisions = cropping_log_entry.colliding_log_entries
+    affected_log_entries = []
+
+    collisions.each do |collision_type, collided_log_entries|
+      collided_log_entries.each do |collided_log_entry|
+        if collided_log_entry
+          # always reload because log entries can change between iterations
+          collided_log_entry.reload
+          affected_log_entries += collided_log_entry.trim(cropping_log_entry)
+        end
+      end
+    end
+
+    affected_log_entries
+  end
+
   def duration
     finished_at - started_at
   end
@@ -81,10 +99,19 @@ class LogEntry < ApplicationRecord
     end
   end
 
+  def wrapped_by?(log_entry)
+    started_at >= log_entry.started_at and
+      finished_at <= log_entry.finished_at
+  end
+
   def trim(log_entry)
     affected_log_entries = []
 
-    if started_at < log_entry.started_at and finished_at > log_entry.finished_at
+    if wrapped_by? log_entry
+      affected_log_entries << self
+      destroy
+
+    elsif started_at < log_entry.started_at and finished_at > log_entry.finished_at
       new_log_entry = LogEntry.new attributes.except('id')
       new_log_entry.started_at = log_entry.finished_at
 
@@ -94,19 +121,21 @@ class LogEntry < ApplicationRecord
       self.finished_at = log_entry.started_at
       affected_log_entries << self
 
-    elsif started_at < log_entry.started_at and finished_at > log_entry.started_at
+    elsif started_at < log_entry.started_at and finished_at >= log_entry.started_at
       self.finished_at = log_entry.started_at
       affected_log_entries << self
 
-    elsif started_at > log_entry.started_at and log_entry.started_at < finished_at
+    elsif started_at >= log_entry.started_at and log_entry.started_at < finished_at
       self.started_at = log_entry.finished_at
       affected_log_entries << self
     end
 
-    if started_at >= finished_at
-      destroy
-    elsif persisted?
-      save
+    if persisted?
+      if started_at >= finished_at
+        destroy
+      else
+        save
+      end
     end
 
     affected_log_entries
