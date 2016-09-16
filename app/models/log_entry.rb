@@ -49,16 +49,13 @@ class LogEntry < ApplicationRecord
 
   def self.crop(start, finish, user)
     cropping_log_entry = LogEntry.new started_at: start, finished_at: finish, user: user
-    collisions = cropping_log_entry.colliding_log_entries
     affected_log_entries = []
 
-    collisions.each do |collision_type, collided_log_entries|
-      collided_log_entries.each do |collided_log_entry|
-        if collided_log_entry
-          # always reload because log entries can change between iterations
-          collided_log_entry.reload
-          affected_log_entries += collided_log_entry.trim(cropping_log_entry)
-        end
+    cropping_log_entry.colliding_log_entries.each do |collided_log_entry|
+      if collided_log_entry
+        # always reload because log entries can change between iterations
+        collided_log_entry.reload
+        affected_log_entries += collided_log_entry.trim(cropping_log_entry)
       end
     end
 
