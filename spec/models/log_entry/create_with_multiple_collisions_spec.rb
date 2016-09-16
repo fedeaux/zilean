@@ -81,9 +81,10 @@ RSpec.describe LogEntry, type: :model do
         wrapped_log_entry = LogEntry.create(log_entry_attributes.merge(started_at: time(3), finished_at: time(5))).first
 
         affected_log_entries = LogEntry.create log_entry_attributes.merge(started_at: time(1), finished_at: time(5))
-        wrapped_log_entry.reload
 
         expect(LogEntry.count).to eq 1
+        wrapped_log_entry = LogEntry.first
+
         expect(wrapped_log_entry.started_at).to eq time(0)
         expect(wrapped_log_entry.finished_at).to eq time(5)
         expect(affected_log_entries).to include wrapped_log_entry, left_log_entry
@@ -94,11 +95,10 @@ RSpec.describe LogEntry, type: :model do
         right_log_entry = LogEntry.create(log_entry_attributes.merge(started_at: time(7), finished_at: time(10))).first
 
         affected_log_entries = LogEntry.create log_entry_attributes.merge(started_at: time(1), finished_at: time(8))
-        wrapped_log_entry.reload
-
-        wrapped_log_entry.reload
 
         expect(LogEntry.count).to eq 1
+        wrapped_log_entry = LogEntry.first
+
         expect(wrapped_log_entry.started_at).to eq time(1)
         expect(wrapped_log_entry.finished_at).to eq time(10)
         expect(affected_log_entries).to include wrapped_log_entry, right_log_entry
@@ -131,11 +131,6 @@ RSpec.describe LogEntry, type: :model do
       right_log_entry.reload
 
       expect(wrapped_log_entry_3.started_at).to eq time(0)
-      expect(wrapped_log_entry_3.finished_at).to eq time(9)
-
-      expect(right_log_entry.started_at).to eq time(9)
-      expect(right_log_entry.finished_at).to eq time(10)
-
       expect(LogEntry.count).to eq 2
     end
   end
