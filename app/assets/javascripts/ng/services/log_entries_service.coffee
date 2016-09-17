@@ -1,11 +1,17 @@
 angular.module('ZileanApp').factory 'LogEntryService', ($resource, $http) ->
   class LogEntryService
     constructor: (@errorHandler) ->
-      @service = $resource('/api/log_entries/:id')
+      @service = $resource('/api/log_entries/:id/:action', {}, {
+       'crop': { method: 'POST', params: { action: 'crop' }}
+      })
 
     createMultiple: (log_entries, complete) ->
       log_entries_attributes = (log_entry.attributes() for log_entry in log_entries)
       new @service(log_entries: log_entries_attributes).$save @onServerResponse(complete), @errorHandler
+
+    cropMultiple: (log_entries, complete) ->
+      log_entries_attributes = (log_entry.attributes() for log_entry in log_entries)
+      new @service(log_entries: log_entries_attributes).$crop @onServerResponse(complete), @errorHandler
 
     delete: (log_entry, complete) ->
       new @service().$delete {id: log_entry.id}, @onServerResponse(complete), @errorHandler
