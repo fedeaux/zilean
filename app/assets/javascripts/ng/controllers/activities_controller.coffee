@@ -2,10 +2,10 @@ class ActivitiesController
   @defaultArgs: ->
     name: 'activities'
 
-  constructor: (@$scope, @ResourceService, @Activity) ->
+  constructor: (@scope, @ResourceService, @Activity) ->
     window.activities_ctrl = @
     @setComponentInfo()
-    @$scope.$emit 'Dashboard:Register', @component
+    @scope.$emit 'Dashboard:Register', @component
     @service = new @ResourceService @serverErrorHandler, 'activity', 'activities'
     @loadActivities()
 
@@ -21,11 +21,20 @@ class ActivitiesController
 
   updateAuxiliarActivities: ->
     @displayable_activities = (activity for id, activity of @activities)
-    @all_activities = [].concat.apply([], (activity.withChildren() for id, activity of @activities))
+    activities = [].concat.apply([], (activity.withChildren() for id, activity of @activities))
 
-    @activities_as_options = angular.copy @all_activities
+    @all_activities = {}
+    for activity in activities
+      @all_activities[activity.id] = activity
+
+    @activities_as_options = angular.copy activities
     @activities_as_options.unshift { breadcrumbs_path_names: '[none]', id: null }
-    @$scope.$emit 'Dashboard:PublishData', data: { activities_select_options: @activities_as_options }
+
+    @dashboard.publishData
+      event_scope: 'Activities:Main'
+      data:
+        activities_select_options: @activities_as_options
+        activities: @all_activities
 
   setFormActivity: (activity) ->
     @form_activity = activity

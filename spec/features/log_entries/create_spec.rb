@@ -28,6 +28,7 @@ feature "Create LogEntry from log entries table", js: true do
 
   scenario "creating a log entry" do
     create_log_entry('01:00', '02:50', @activity)
+    expect(page).to have_css '.log-entry-list .log-entry-wrapper'
     expect(LogEntry.count).to eq 1
 
     log_entry = LogEntry.first

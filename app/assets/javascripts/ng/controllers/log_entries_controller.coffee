@@ -10,8 +10,10 @@ class LogEntriesController
   @componentIdFor: (target_day_id) ->
     "log-entries-#{target_day_id}"
 
-  constructor: (@$scope, @LogEntryService, @LogEntry) ->
+  constructor: (@scope, @LogEntryService, @LogEntry) ->
     window.log_entries_ctrl = @
+    @scope.$on 'Dashboard:DataPublished:Activities:Main', @activitiesLoaded
+    @scope.$on 'Dashboard:DataPublished:LogEntries:BlankUpdate', @updateAuxiliarLogEntries
 
   init: (@target_day_id) ->
     @target_day = moment @target_day_id
@@ -19,7 +21,7 @@ class LogEntriesController
     @service = new @LogEntryService @serverErrorHandler, 'log_entry', 'log_entries'
 
     @setComponentInfo()
-    @$scope.$emit 'Dashboard:Register', @component
+    @scope.$emit 'Dashboard:Register', @component
 
     @loadLogEntries()
 
@@ -37,28 +39,53 @@ class LogEntriesController
       formatted: next_day.format(DateFormats.pretty_day)
       db: next_day.format(DateFormats.db_day)
 
-  loadLogEntries: (force = false, complete) ->
-    @log_entries ?= {}
-    @log_entries = {} if force
+  activitiesLoaded: =>
+    if @log_entries_attributes
+      @setLogEntries @log_entries_attributes
+      @log_entries_attributes = false
+
+    if @log_entries_load_complete
+      @log_entries_load_complete()
+      @log_entries_load_complete = false
+
+  setLogEntries: (log_entries_attributes) ->
+    @dashboard.shared_data.log_entries ?= {}
+
+    for log_entry_attr in log_entries_attributes
+      log_entry_attr.activity = @dashboard.shared_data.activities[log_entry_attr.activity.id]
+      @dashboard.shared_data.log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
+
+    @dashboard.publishData
+      event_scope: 'LogEntries:BlankUpdate'
+
+  loadLogEntries: (complete) ->
+    for log_entry in @referencedLogEntries()
+      delete @dashboard.shared_data.log_entries[log_entry.id]
+
+    @log_entries_attributes = false
 
     @service.day @target_day_id, (data) =>
-      for log_entry_attr in data['log_entries']
-        @log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
-
-      @updateAuxiliarLogEntries()
-
-      if @table
-        @table.refresh @log_entries
+      if @dashboard.shared_data.activities
+        @setLogEntries data.log_entries
+        complete() if complete
 
       else
-        @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
-          resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day,
-          log_entries_ctrl: @
+        @log_entries_attributes = data.log_entries
+        @log_entries_load_complete = complete
 
-      complete() if complete
+  updateAuxiliarLogEntries: =>
+    @log_entries_as_array = @referencedLogEntries()
 
-  updateAuxiliarLogEntries: ->
-    @log_entries_as_array = (log_entry for id, log_entry of @log_entries)
+    if @table
+      @table.refresh @dashboard.shared_data.log_entries
+
+    else
+      @table = new LogTable.Table $('#daily-log-table'), @dashboard.shared_data.log_entries, @LogEntry,
+        resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day,
+        log_entries_ctrl: @
+
+  referencedLogEntries: ->
+    log_entry for id, log_entry of @dashboard.shared_data.log_entries when log_entry.referencesDay(@target_day_id)
 
   setComponentInfo: ->
     @component =
@@ -79,21 +106,22 @@ class LogEntriesController
   deleteLogEntry: (log_entry) ->
     @service.delete log_entry, @deleteLogEntryCallback
 
-  saveLogEntryCallback: (data) =>
-    @loadLogEntries true, @hideForm
-
   hideForm: =>
     @table.clear_selection()
 
+  saveLogEntryCallback: (data) =>
+    @loadLogEntries @hideForm
+
   deleteLogEntryCallback: (data) =>
-    delete @log_entries[data.log_entry.id]
+    delete @dashboard.shared_data.log_entries[data.log_entry.id]
     @updateAuxiliarLogEntries()
-    @table.assign_log_entries_to_cells()
+    @dashboard.publishData
+      event_scope: 'LogEntries:BlankUpdate'
 
   serverErrorHandler: ->
 
   loadNew: (target_day_id) ->
-    @$scope.$emit 'Dashboard:Insert', LogEntriesController.argsFor(target_day_id)
+    @scope.$emit 'Dashboard:Insert', LogEntriesController.argsFor(target_day_id)
 
 LogEntriesController.$inject = ['$scope', 'LogEntryService', 'LogEntry']
 angular.module('ZileanApp').controller 'LogEntriesController', LogEntriesController
