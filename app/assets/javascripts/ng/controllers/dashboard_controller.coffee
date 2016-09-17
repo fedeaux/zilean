@@ -3,6 +3,7 @@ class DashboardController
     window.dashboard_ctrl = @
     @components = {}
     @components_nodes = {}
+    @shared_data = {}
 
     @scope.$on 'Dashboard:Register', @registerComponent
     @scope.$on 'Dashboard:Insert', @insertComponentCallback
@@ -10,10 +11,9 @@ class DashboardController
     @initializeComponents()
 
   publishData: (published_data) =>
-    @shared_data ?= {}
-
-    for name, data of published_data.data
-      @shared_data[name] = data
+    if published_data.data
+      for name, data of published_data.data
+        @shared_data[name] = data
 
     @scope.$broadcast "Dashboard:DataPublished:#{published_data.event_scope}"
 

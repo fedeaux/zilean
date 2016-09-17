@@ -38,7 +38,9 @@ angular.module('ZileanApp').factory 'LogEntry', ($resource) ->
       last_day = @finished_at.format DateFormats.db_day
 
       @days = [first_day]
-      @days.push last_day unless last_day == first_day
+
+      if last_day != first_day and @finished_at.format(DateFormats.hour_and_minute) != '00:00'
+        @days.push last_day
 
     referencesDay: (day) ->
       @days.indexOf(day) > -1

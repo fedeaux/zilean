@@ -13,6 +13,7 @@ class LogEntriesController
   constructor: (@scope, @LogEntryService, @LogEntry) ->
     window.log_entries_ctrl = @
     @scope.$on 'Dashboard:DataPublished:Activities:Main', @activitiesLoaded
+    @scope.$on 'Dashboard:DataPublished:LogEntries:BlankUpdate', @updateAuxiliarLogEntries
 
   init: (@target_day_id) ->
     @target_day = moment @target_day_id
@@ -39,8 +40,6 @@ class LogEntriesController
       db: next_day.format(DateFormats.db_day)
 
   activitiesLoaded: =>
-    @areActivitiesLoaded = true
-
     if @log_entries_attributes
       @setLogEntries @log_entries_attributes
       @log_entries_attributes = false
@@ -50,27 +49,23 @@ class LogEntriesController
       @log_entries_load_complete = false
 
   setLogEntries: (log_entries_attributes) ->
+    @dashboard.shared_data.log_entries ?= {}
+
     for log_entry_attr in log_entries_attributes
       log_entry_attr.activity = @dashboard.shared_data.activities[log_entry_attr.activity.id]
-      @log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
+      @dashboard.shared_data.log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
 
-    @updateAuxiliarLogEntries()
+    @dashboard.publishData
+      event_scope: 'LogEntries:BlankUpdate'
 
-    if @table
-      @table.refresh @log_entries
+  loadLogEntries: (complete) ->
+    for log_entry in @referencedLogEntries()
+      delete @dashboard.shared_data.log_entries[log_entry.id]
 
-    else
-      @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
-        resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day,
-        log_entries_ctrl: @
-
-  loadLogEntries: (force = false, complete) ->
-    @log_entries ?= {}
-    @log_entries = {} if force
     @log_entries_attributes = false
 
     @service.day @target_day_id, (data) =>
-      if @areActivitiesLoaded
+      if @dashboard.shared_data.activities
         @setLogEntries data.log_entries
         complete() if complete
 
@@ -78,8 +73,19 @@ class LogEntriesController
         @log_entries_attributes = data.log_entries
         @log_entries_load_complete = complete
 
-  updateAuxiliarLogEntries: ->
-    @log_entries_as_array = (log_entry for id, log_entry of @log_entries)
+  updateAuxiliarLogEntries: =>
+    @log_entries_as_array = @referencedLogEntries()
+
+    if @table
+      @table.refresh @dashboard.shared_data.log_entries
+
+    else
+      @table = new LogTable.Table $('#daily-log-table'), @dashboard.shared_data.log_entries, @LogEntry,
+        resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day,
+        log_entries_ctrl: @
+
+  referencedLogEntries: ->
+    log_entry for id, log_entry of @dashboard.shared_data.log_entries when log_entry.referencesDay(@target_day_id)
 
   setComponentInfo: ->
     @component =
@@ -100,16 +106,17 @@ class LogEntriesController
   deleteLogEntry: (log_entry) ->
     @service.delete log_entry, @deleteLogEntryCallback
 
-  saveLogEntryCallback: (data) =>
-    @loadLogEntries true, @hideForm
-
   hideForm: =>
     @table.clear_selection()
 
+  saveLogEntryCallback: (data) =>
+    @loadLogEntries @hideForm
+
   deleteLogEntryCallback: (data) =>
-    delete @log_entries[data.log_entry.id]
+    delete @dashboard.shared_data.log_entries[data.log_entry.id]
     @updateAuxiliarLogEntries()
-    @table.assign_log_entries_to_cells()
+    @dashboard.publishData
+      event_scope: 'LogEntries:BlankUpdate'
 
   serverErrorHandler: ->
 
