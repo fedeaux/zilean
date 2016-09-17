@@ -1,7 +1,7 @@
 .table-selection#table-selection{ 'ng-show': 'log_entries_ctrl.table.segments.length > 0' }
   %p {{ log_entries_ctrl.table.number_of_selected_cells() }} selected cells. ( {{ log_entries_ctrl.table.time_of_selected_cells() | elapsed }})
 
-  = form_tag '/', class: 'ui form' do
+  = form_tag '/', class: 'ui form', onsubmit: 'return false' do
     .div{ ng: { repeat: 'segment in log_entries_ctrl.table.segments' } }
       .ui.fluid.mini.steps
         .step
@@ -21,4 +21,4 @@
 
     .ui.small.buttons
       .ui.primary.button.log-entries-selection-save{ 'ng-click': 'log_entries_ctrl.saveLogEntries()' } Save
-      .ui.basic.button.log-entries-selection-cancel{ 'ng-click': 'log_entries_ctrl.table.clear_selection()' } Cancel
+      .ui.basic.button.log-entries-selection-cancel{ 'ng-click': 'log_entries_ctrl.hideForm()' } Cancel

@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-feature "Manipulate log entries table", js: true do
+feature "Create LogEntry from log entries table", js: true do
   given(:current_user) {
     create_or_find_user :user_ray
   }
 
   background do
-    @activity = create_or_find_activity :activity_work_project_x
+    @activity = create_or_find_activity :activity_sleep
     sign_in_with(current_user.email, attributes_for(:user_ray)[:password] )
     visit '/'
   end
@@ -26,14 +26,14 @@ feature "Manipulate log entries table", js: true do
     end
   end
 
-  xscenario "creating a log entry" do
-    select_cells from: '01:00', to: '02:50'
+  scenario "creating a log entry" do
+    create_log_entry('01:00', '02:50', @activity)
+    expect(LogEntry.count).to eq 1
 
-    within '#table-selection' do
-      select_activity '#log_entry_activity_id', @activity.id
-      find('.log-entries-selection-save').click
-    end
+    log_entry = LogEntry.first
+    expect(log_entry.activity.id).to eq @activity.id
 
-    expect(page).to have_css '.log-entry-list'
+    expect(to_table_time(log_entry.started_at)).to eq '01:00'
+    expect(to_table_time(log_entry.finished_at)).to eq '03:00'
   end
 end
