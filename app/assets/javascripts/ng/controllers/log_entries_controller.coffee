@@ -10,8 +10,9 @@ class LogEntriesController
   @componentIdFor: (target_day_id) ->
     "log-entries-#{target_day_id}"
 
-  constructor: (@$scope, @LogEntryService, @LogEntry) ->
+  constructor: (@scope, @LogEntryService, @LogEntry) ->
     window.log_entries_ctrl = @
+    @scope.$on 'Dashboard:DataPublished:Activities:Main', @activitiesLoaded
 
   init: (@target_day_id) ->
     @target_day = moment @target_day_id
@@ -19,7 +20,7 @@ class LogEntriesController
     @service = new @LogEntryService @serverErrorHandler, 'log_entry', 'log_entries'
 
     @setComponentInfo()
-    @$scope.$emit 'Dashboard:Register', @component
+    @scope.$emit 'Dashboard:Register', @component
 
     @loadLogEntries()
 
@@ -37,25 +38,44 @@ class LogEntriesController
       formatted: next_day.format(DateFormats.pretty_day)
       db: next_day.format(DateFormats.db_day)
 
+  activitiesLoaded: =>
+    @areActivitiesLoaded = true
+
+    if @log_entries_attributes
+      @setLogEntries @log_entries_attributes
+      @log_entries_attributes = false
+
+    if @log_entries_load_complete
+      @log_entries_load_complete()
+      @log_entries_load_complete = false
+
+  setLogEntries: (log_entries_attributes) ->
+    for log_entry_attr in log_entries_attributes
+      @log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
+
+    @updateAuxiliarLogEntries()
+
+    if @table
+      @table.refresh @log_entries
+
+    else
+      @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
+        resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day,
+        log_entries_ctrl: @
+
   loadLogEntries: (force = false, complete) ->
     @log_entries ?= {}
     @log_entries = {} if force
+    @log_entries_attributes = false
 
     @service.day @target_day_id, (data) =>
-      for log_entry_attr in data['log_entries']
-        @log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
-
-      @updateAuxiliarLogEntries()
-
-      if @table
-        @table.refresh @log_entries
+      if @areActivitiesLoaded
+        @setLogEntries data.log_entries
+        complete() if complete
 
       else
-        @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
-          resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day,
-          log_entries_ctrl: @
-
-      complete() if complete
+        @log_entries_attributes = data.log_entries
+        @log_entries_load_complete = complete
 
   updateAuxiliarLogEntries: ->
     @log_entries_as_array = (log_entry for id, log_entry of @log_entries)
@@ -93,7 +113,7 @@ class LogEntriesController
   serverErrorHandler: ->
 
   loadNew: (target_day_id) ->
-    @$scope.$emit 'Dashboard:Insert', LogEntriesController.argsFor(target_day_id)
+    @scope.$emit 'Dashboard:Insert', LogEntriesController.argsFor(target_day_id)
 
 LogEntriesController.$inject = ['$scope', 'LogEntryService', 'LogEntry']
 angular.module('ZileanApp').controller 'LogEntriesController', LogEntriesController

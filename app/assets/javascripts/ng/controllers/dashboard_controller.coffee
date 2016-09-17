@@ -5,16 +5,17 @@ class DashboardController
     @components_nodes = {}
 
     @scope.$on 'Dashboard:Register', @registerComponent
-    @scope.$on 'Dashboard:PublishData', @publishData
     @scope.$on 'Dashboard:Insert', @insertComponentCallback
 
     @initializeComponents()
 
-  publishData: (event, params) =>
+  publishData: (published_data) =>
     @shared_data ?= {}
 
-    for name, data of params.data
+    for name, data of published_data.data
       @shared_data[name] = data
+
+    @scope.$broadcast "Dashboard:DataPublished:#{published_data.event_scope}"
 
   insertComponentCallback: (event, params) =>
     @insertComponent params.name, params
@@ -36,6 +37,7 @@ class DashboardController
 
   registerComponent: (event, component) =>
     @components[component['id']] = component
+    component.component.dashboard = @
 
   toggleComponentVisibility: (component_id) ->
     if @components[component_id]
