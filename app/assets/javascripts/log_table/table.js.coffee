@@ -16,6 +16,9 @@ class LogTable.Table
     @cells = @cell_generator.generate @options.start_time
     @segments = []
 
+  refresh: (@log_entries) ->
+    @assign_log_entries_to_cells()
+
   assign_log_entries_to_cells: ->
     cell.log_entry = null for cell in @cells
 
@@ -31,6 +34,7 @@ class LogTable.Table
 
   assign_events: ->
     $('body').mouseup @handle_mouseup
+    $('body').keypress @handle_keypress
 
     @header = $ '.header', @table
     @header.click @clear_selection
@@ -122,3 +126,7 @@ class LogTable.Table
 
   handle_mouseup: (e) =>
     @selector = false
+
+  handle_keypress: (e) =>
+    if @options.log_entries_ctrl and e.keyCode == 46
+      @options.log_entries_ctrl.cropSelection()

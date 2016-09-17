@@ -37,7 +37,7 @@ class LogEntriesController
       formatted: next_day.format(DateFormats.pretty_day)
       db: next_day.format(DateFormats.db_day)
 
-  loadLogEntries: (force = false) ->
+  loadLogEntries: (force = false, complete) ->
     @log_entries ?= {}
     @log_entries = {} if force
 
@@ -47,8 +47,15 @@ class LogEntriesController
 
       @updateAuxiliarLogEntries()
 
-      @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
-        resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day
+      if @table
+        @table.refresh @log_entries
+
+      else
+        @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
+          resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day,
+          log_entries_ctrl: @
+
+      complete() if complete
 
   updateAuxiliarLogEntries: ->
     @log_entries_as_array = (log_entry for id, log_entry of @log_entries)
@@ -65,11 +72,17 @@ class LogEntriesController
   saveLogEntries: ->
     @service.createMultiple @table.segments, @saveLogEntryCallback
 
+  cropSelection: ->
+    @service.cropMultiple @table.segments, @saveLogEntryCallback
+
   deleteLogEntry: (log_entry) ->
     @service.delete log_entry, @deleteLogEntryCallback
 
   saveLogEntryCallback: (data) =>
-    @loadLogEntries true
+    @loadLogEntries true, @hideForm
+
+  hideForm: =>
+    @table.clear_selection()
 
   deleteLogEntryCallback: (data) =>
     delete @log_entries[data.log_entry.id]

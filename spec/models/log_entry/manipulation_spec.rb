@@ -23,15 +23,6 @@ RSpec.describe LogEntry, type: :model do
         expect(first_log_entry.started_at).to eq time(2)
       end
 
-      it 'on wrapper collision, delete the log_entry' do
-        first_log_entry = create :log_entry, started_at: time(1), finished_at: time(2)
-        second_log_entry = build :log_entry, started_at: time(0), finished_at: time(3)
-
-        first_log_entry.trim second_log_entry
-
-        expect(LogEntry.exists? first_log_entry.id).to be false
-      end
-
       it 'on wrapped collision, create a new log entry to leave a hole between those two equals to the size of the new log entry' do
         first_log_entry = create :log_entry, started_at: time(0), finished_at: time(3)
         second_log_entry = build :log_entry, started_at: time(1), finished_at: time(2)
@@ -44,6 +35,44 @@ RSpec.describe LogEntry, type: :model do
         expect(first_log_entry.finished_at).to eq time(1)
         expect(created_log_entry.started_at).to eq time(2)
         expect(created_log_entry.finished_at).to eq time(3)
+      end
+
+      context 'wrapper collision' do
+        it 'destroys the log_entry, collision is greater on both sides' do
+          first_log_entry = create :log_entry, started_at: time(1), finished_at: time(2)
+          second_log_entry = build :log_entry, started_at: time(0), finished_at: time(3)
+
+          first_log_entry.trim second_log_entry
+
+          expect(LogEntry.exists? first_log_entry.id).to be false
+        end
+
+        it 'destroys the log_entry, collision matches left' do
+          first_log_entry = create :log_entry, started_at: time(1), finished_at: time(2)
+          second_log_entry = build :log_entry, started_at: time(1), finished_at: time(3)
+
+          first_log_entry.trim second_log_entry
+
+          expect(LogEntry.exists? first_log_entry.id).to be false
+        end
+
+        it 'destroys the log_entry, collision matches right' do
+          first_log_entry = create :log_entry, started_at: time(2), finished_at: time(3)
+          second_log_entry = build :log_entry, started_at: time(1), finished_at: time(3)
+
+          first_log_entry.trim second_log_entry
+
+          expect(LogEntry.exists? first_log_entry.id).to be false
+        end
+
+        it 'destroys the log_entry, collision matches both sides' do
+          first_log_entry = create :log_entry, started_at: time(1), finished_at: time(2)
+          second_log_entry = build :log_entry, started_at: time(1), finished_at: time(2)
+
+          first_log_entry.trim second_log_entry
+
+          expect(LogEntry.exists? first_log_entry.id).to be false
+        end
       end
     end
   end
