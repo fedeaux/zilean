@@ -21,9 +21,13 @@ class ActivitiesController
 
   updateAuxiliarActivities: ->
     @displayable_activities = (activity for id, activity of @activities)
-    @all_activities = [].concat.apply([], (activity.withChildren() for id, activity of @activities))
+    activities = [].concat.apply([], (activity.withChildren() for id, activity of @activities))
 
-    @activities_as_options = angular.copy @all_activities
+    @all_activities = {}
+    for activity in activities
+      @all_activities[activity.id] = activity
+
+    @activities_as_options = angular.copy activities
     @activities_as_options.unshift { breadcrumbs_path_names: '[none]', id: null }
 
     @dashboard.publishData

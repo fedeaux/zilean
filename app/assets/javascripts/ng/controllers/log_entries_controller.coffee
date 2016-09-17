@@ -51,6 +51,7 @@ class LogEntriesController
 
   setLogEntries: (log_entries_attributes) ->
     for log_entry_attr in log_entries_attributes
+      log_entry_attr.activity = @dashboard.shared_data.activities[log_entry_attr.activity.id]
       @log_entries[log_entry_attr.id] = new @LogEntry log_entry_attr
 
     @updateAuxiliarLogEntries()

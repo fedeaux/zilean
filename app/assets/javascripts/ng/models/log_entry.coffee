@@ -11,6 +11,7 @@ angular.module('ZileanApp').factory 'LogEntry', ($resource) ->
           @[name] = default_value
 
       @parseDateFields()
+      @addAuxiliarFields()
 
     isPersisted: ->
       !! @id
@@ -31,6 +32,16 @@ angular.module('ZileanApp').factory 'LogEntry', ($resource) ->
         attr.duration = null
 
       attr
+
+    addAuxiliarFields: ->
+      first_day = @started_at.format DateFormats.db_day
+      last_day = @finished_at.format DateFormats.db_day
+
+      @days = [first_day]
+      @days.push last_day unless last_day == first_day
+
+    referencesDay: (day) ->
+      @days.indexOf(day) > -1
 
     attributes: ->
       attr = {}
