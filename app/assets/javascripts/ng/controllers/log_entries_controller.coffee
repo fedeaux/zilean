@@ -73,7 +73,8 @@ class LogEntriesController
     @service.createMultiple @table.segments, @saveLogEntryCallback
 
   cropSelection: ->
-    @service.cropMultiple @table.segments, @saveLogEntryCallback
+    if @table.segments.length > 0
+      @service.cropMultiple @table.segments, @saveLogEntryCallback
 
   deleteLogEntry: (log_entry) ->
     @service.delete log_entry, @deleteLogEntryCallback

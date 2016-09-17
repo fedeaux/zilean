@@ -34,7 +34,7 @@ class LogTable.Table
 
   assign_events: ->
     $('body').mouseup @handle_mouseup
-    $('body').keypress @handle_keypress
+    $('body').keydown @handle_keydown
 
     @header = $ '.header', @table
     @header.click @clear_selection
@@ -127,6 +127,6 @@ class LogTable.Table
   handle_mouseup: (e) =>
     @selector = false
 
-  handle_keypress: (e) =>
-    if @options.log_entries_ctrl and e.keyCode == 46
+  handle_keydown: (e) =>
+    if @options.log_entries_ctrl and e.which == 46
       @options.log_entries_ctrl.cropSelection()
