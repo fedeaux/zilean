@@ -26,6 +26,18 @@ class Api::LogEntriesController < Api::BaseController
     head 200
   end
 
+  def crop
+    if params[:log_entries].any?
+      log_entries_params[:log_entries].each do |log_entry_attributes|
+        LogEntry.crop log_entry_attributes[:started_at], log_entry_attributes[:finished_at], current_user
+      end
+
+      head 200
+    else
+      head 400
+    end
+  end
+
   def destroy
     @log_entry.destroy
     render :show

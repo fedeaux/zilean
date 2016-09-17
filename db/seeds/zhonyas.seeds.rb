@@ -47,3 +47,6 @@ response.each do |data|
     end
   end
 end
+
+ActiveRecord::Base.connection.execute("ALTER SEQUENCE activities_id_seq RESTART WITH #{Activity.pluck(:id).max + 1}")
+ActiveRecord::Base.connection.execute("ALTER SEQUENCE log_entries_id_seq RESTART WITH #{LogEntry.pluck(:id).max + 1}")

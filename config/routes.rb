@@ -4,7 +4,9 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: 'json' } do
     resources :activities
-    resources :log_entries
+    resources :log_entries do
+      post 'crop' => 'log_entries#crop', on: :collection
+    end
   end
 
   get 'templates/*name' => "dashboard#template"

@@ -47,8 +47,13 @@ class LogEntriesController
 
       @updateAuxiliarLogEntries()
 
-      @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
-        resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day
+      if @table
+        @table.refresh @log_entries
+
+      else
+        @table = new LogTable.Table $('#daily-log-table'), @log_entries, @LogEntry,
+          resolution: 10, start_time: @target_day.clone(), cell_generator_class: LogTable.CellsGenerators.Day,
+          log_entries_ctrl: @
 
   updateAuxiliarLogEntries: ->
     @log_entries_as_array = (log_entry for id, log_entry of @log_entries)
@@ -64,6 +69,9 @@ class LogEntriesController
 
   saveLogEntries: ->
     @service.createMultiple @table.segments, @saveLogEntryCallback
+
+  cropSelection: ->
+    @service.cropMultiple @table.segments, @saveLogEntryCallback
 
   deleteLogEntry: (log_entry) ->
     @service.delete log_entry, @deleteLogEntryCallback
