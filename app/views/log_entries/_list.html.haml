@@ -1,5 +1,9 @@
 .log-entry-list{ 'ng-hide': 'log_entries_ctrl.table.segments.length > 0' }
-  .log-entry-wrapper{ ng: { repeat: "log_entry in log_entries_ctrl.log_entries_as_array | orderBy: 'started_at'", class: "{'focused': log_entries_ctrl.table.focused_log_entry.id == log_entry.id}" }}
+
+  .log-entry-wrapper{ ng: { repeat: "log_entry in log_entries_ctrl.log_entries_as_array | orderBy: 'started_at'",
+                            class: "{'focused': log_entries_ctrl.table.focused_log_entry.id == log_entry.id,
+                                     'log-entry-list-item-{{ log_entry.id }}': true }" }}
+
     .log-entry
       .color-bubble{ 'ng-style': "{ 'background-color': log_entry.activity.color }"}
       {{ log_entry.activity.name }}
@@ -9,7 +13,7 @@
 
       .actions
         .log-entry-id {{ log_entry.id }}
-        %i.trash.icon.action{ 'ng-click': 'log_entries_ctrl.deleteLogEntry(log_entry)' }
+        %i.trash.icon.action.destroy-log-entry-button{ 'ng-click': 'log_entries_ctrl.deleteLogEntry(log_entry)' }
 
       .clear
 

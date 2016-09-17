@@ -17,7 +17,10 @@ angular.module('ZileanApp').factory 'LogEntryService', ($resource, $http) ->
       new @service().$delete {id: log_entry.id}, @onServerResponse(complete), @errorHandler
 
     day: (target_day, complete) ->
-      new @service().$get { day: target_day }, @onServerResponse(complete), @errorHandler
+      from = moment(target_day)
+      to = moment(target_day).add 24, 'hours'
+
+      new @service().$get { from: from, to: to }, @onServerResponse(complete), @errorHandler
 
     onServerResponse: (complete) ->
       (response) ->

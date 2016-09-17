@@ -4,6 +4,8 @@ class Api::LogEntriesController < Api::BaseController
   def index
     if params[:day]
       @log_entries = current_user.log_entries.on_day Time.parse(params[:day])
+    elsif params[:from] and params[:to]
+      @log_entries = current_user.log_entries.on_period Time.parse(params[:from]), Time.parse(params[:to])
     else
       @log_entries = current_user.log_entries.today
     end
