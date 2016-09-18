@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160903210933) do
+ActiveRecord::Schema.define(version: 20160918223930) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,17 @@ ActiveRecord::Schema.define(version: 20160903210933) do
     t.index ["user_id"], name: "index_log_entries_on_user_id", using: :btree
   end
 
+  create_table "reports", force: :cascade do |t|
+    t.integer  "user_id"
+    t.text     "trackers",   default: [],              array: true
+    t.text     "weekdays",   default: [],              array: true
+    t.datetime "start"
+    t.datetime "finish"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
@@ -60,4 +71,5 @@ ActiveRecord::Schema.define(version: 20160903210933) do
   add_foreign_key "activities", "users"
   add_foreign_key "log_entries", "activities"
   add_foreign_key "log_entries", "users"
+  add_foreign_key "reports", "users"
 end
