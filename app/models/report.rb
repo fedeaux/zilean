@@ -1,5 +1,7 @@
 class Report < ApplicationRecord
   belongs_to :user
+  has_many :report_activities
+  has_many :activities, through: :report_activities
 
   ALL_WEEKDAYS = [0, 1, 2, 3, 4, 5, 6]
 
@@ -19,5 +21,9 @@ class Report < ApplicationRecord
 
   def weekdays
     super.map(&:to_i)
+  end
+
+  def activities=(activities)
+    super activities + activities.map(&:descendants).flatten
   end
 end

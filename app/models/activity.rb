@@ -1,5 +1,8 @@
 class Activity < ApplicationRecord
   belongs_to :user
+  has_many :report_activities
+  has_many :reports, through: :report_activities
+
   has_ancestry
 
   validates_presence_of :name, :slug, :user, :color

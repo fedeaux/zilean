@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160918223930) do
+ActiveRecord::Schema.define(version: 20160918230802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,13 @@ ActiveRecord::Schema.define(version: 20160918223930) do
     t.datetime "updated_at",   null: false
     t.index ["activity_id"], name: "index_log_entries_on_activity_id", using: :btree
     t.index ["user_id"], name: "index_log_entries_on_user_id", using: :btree
+  end
+
+  create_table "report_activities", force: :cascade do |t|
+    t.integer "report_id"
+    t.integer "activity_id"
+    t.index ["activity_id"], name: "index_report_activities_on_activity_id", using: :btree
+    t.index ["report_id"], name: "index_report_activities_on_report_id", using: :btree
   end
 
   create_table "reports", force: :cascade do |t|
@@ -71,5 +78,7 @@ ActiveRecord::Schema.define(version: 20160918223930) do
   add_foreign_key "activities", "users"
   add_foreign_key "log_entries", "activities"
   add_foreign_key "log_entries", "users"
+  add_foreign_key "report_activities", "activities"
+  add_foreign_key "report_activities", "reports"
   add_foreign_key "reports", "users"
 end
