@@ -6,4 +6,5 @@ class User < ApplicationRecord
 
   has_many :activities
   has_many :log_entries
+  has_many :reports
 end
