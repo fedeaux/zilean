@@ -13,7 +13,7 @@ module ReportMetrics
 
     def resolve
       {
-        duration: {
+        total_duration: {
           in_seconds: @duration,
           formatted: format_duration(@duration)
         }
