@@ -3,19 +3,7 @@ require 'rails_helper'
 RSpec.describe Report, type: :model do
   describe '#log_entries' do
     before :each do
-      @activity_work_project_x = create_or_find_activity(:activity_work_project_x)
-      @activity_work_project_dharma = create_or_find_activity(:activity_work_project_dharma)
-      @activity_work = create_or_find_activity(:activity_work)
-
-      activities = [@activity_work_project_x, @activity_work_project_dharma, @activity_work]
-      activity_index = 0
-
-      time_range( hours_offsets: [0, 3, 12, 18], days: 10 ).each do |time_obj|
-        activity = activities[activity_index]
-        activity_index = (activity_index + 1) % activities.length
-
-        create :log_entry, started_at: time_obj, finished_at: time_obj + 2.hours, activity: activity
-      end
+      create_work_log_entries_spanning_ten_days
     end
 
     it 'fetches all log entries within the activities' do

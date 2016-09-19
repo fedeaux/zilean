@@ -4,6 +4,7 @@ FactoryGirl.define do
 
     factory :activity_sleep do
       name 'Sleep'
+      slug 'sleep'
       color '#00F'
     end
 

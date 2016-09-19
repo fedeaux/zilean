@@ -7,9 +7,9 @@ class Report < ApplicationRecord
 
   def weekdays=(value)
     if value.is_a?(Array)
-      value = value.map(&:to_i).reject { |day|
+      value = value.map(&:to_i).select { |day|
         ALL_WEEKDAYS.include? day
-      }.sort
+      }.uniq.sort
 
       value = ALL_WEEKDAYS.dup if value.empty?
     else
@@ -32,12 +32,12 @@ class Report < ApplicationRecord
     conditions_values = {}
 
     if self.start
-      conditions_strings << "started_at >= :start"
+      conditions_strings << "finished_at >= :start"
       conditions_values[:start] = self.start
     end
 
     if self.finish
-      conditions_strings << "finished_at <= :finish"
+      conditions_strings << "started_at <= :finish"
       conditions_values[:finish] = self.finish
     end
 
@@ -68,5 +68,20 @@ class Report < ApplicationRecord
     names.map { |metric_name|
       metric_name.constantize
     }
+  end
+
+  def metrics_results
+    metric_objs = []
+    metric_objs = metrics.map { |metric_class|
+      metric_class.new self
+    }
+
+    log_entries.each do |log_entry|
+      metric_objs.each do |metric_obj|
+        metric_obj.add log_entry
+      end
+    end
+
+    metric_objs.map(&:resolve).reduce({}, &:merge)
   end
 end
