@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160918230802) do
+ActiveRecord::Schema.define(version: 20160919002431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 20160918230802) do
 
   create_table "reports", force: :cascade do |t|
     t.integer  "user_id"
-    t.text     "trackers",   default: [],              array: true
+    t.text     "metrics",    default: [],              array: true
     t.text     "weekdays",   default: [],              array: true
     t.datetime "start"
     t.datetime "finish"
