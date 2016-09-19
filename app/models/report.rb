@@ -26,4 +26,29 @@ class Report < ApplicationRecord
   def activities=(activities)
     super activities + activities.map(&:descendants).flatten
   end
+
+  def log_entries
+    conditions_strings = []
+    conditions_values = {}
+
+    if self.start
+      conditions_strings << "started_at >= :start"
+      conditions_values[:start] = self.start
+    end
+
+    if self.finish
+      conditions_strings << "finished_at <= :finish"
+      conditions_values[:finish] = self.finish
+    end
+
+    conditions_string = conditions_strings.join ' AND '
+
+    activities.map { |activity|
+      if conditions_strings.any?
+        activity.log_entries.where(conditions_string, conditions_values)
+      else
+        activity.log_entries
+      end
+    }.flatten
+  end
 end

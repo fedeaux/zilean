@@ -1,5 +1,7 @@
 class Activity < ApplicationRecord
   belongs_to :user
+
+  has_many :log_entries
   has_many :report_activities
   has_many :reports, through: :report_activities
 
