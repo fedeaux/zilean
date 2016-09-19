@@ -51,4 +51,22 @@ class Report < ApplicationRecord
       end
     }.flatten
   end
+
+  def metrics=(metrics)
+    super metrics.map { |metric|
+      if metric.is_a? String
+        'ReportMetrics::' + metric.gsub('ReportMetrics::', '')
+      else
+        metric
+      end
+    }.reject(&:nil?)
+  end
+
+  def metrics
+    names = super
+
+    names.map { |metric_name|
+      metric_name.constantize
+    }
+  end
 end
