@@ -1,5 +1,5 @@
 module ReportMetrics
-  class FinishTime
+  class FinishTime < Base
     def initialize(report)
       @report = report
       @finish_times = []
@@ -16,7 +16,12 @@ module ReportMetrics
       if @finish_times.any?
         @average = @finish_times.sum / @finish_times.length
 
-        { finish_time_average: Time.at(@average).utc }
+        {
+          finish_time: {
+            average_formatted: Time.at(@average).utc.strftime('%H:%M'),
+            average_in_seconds: @average
+          }
+        }
       else
         {}
       end
