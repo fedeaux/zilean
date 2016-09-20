@@ -1,5 +1,19 @@
 module ReportMetrics
   class Base
+    attr_reader :namespace
+
+    def initialize
+      @namespace = self.class.namespace
+    end
+
+    def self.namespace
+      self.name
+    end
+
+    def self.dependencies
+      [self]
+    end
+
     def format_duration(duration_in_seconds)
       parts = duration_parts duration_in_seconds
       string_parts = []

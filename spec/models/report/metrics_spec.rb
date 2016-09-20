@@ -60,18 +60,21 @@ RSpec.describe Report, type: :model do
 
         expect(activity_metrics["ReportMetrics::TotalDuration"]).
           to eq ({:in_seconds=>145800.0, :formatted=>"1d16h30min"})
+
+        expect(activity_metrics["ReportMetrics::MeanDuration"]).
+          to eq ({ :per_active_day => "5h47min", :on_period_per_day => "4h3min", :on_period_per_week => "1d4h21min" })
       end
 
-      # it 'can create an hierarchy when multiple activities are given' do
-      #   create_work_log_entries_spanning_ten_days
+      it 'can create an hierarchy when multiple activities are given' do
+        create_work_log_entries_spanning_ten_days
 
-      #   report = create :report, metrics: [ReportMetrics::TotalDuration, ReportMetrics::MeanDuration],
-      #     activities: [create_or_find_activity(:activity_work)],
-      #     weekdays: [1, 2, 3, 4, 5]
+        report = create :report, metrics: [ReportMetrics::TotalDuration, ReportMetrics::MeanDuration],
+          activities: [create_or_find_activity(:activity_work)],
+          weekdays: [1, 2, 3, 4, 5]
 
-      #   metrics_results = report.metrics_results
-      #   ap metrics_results
-      # end
+        metrics_results = report.metrics_results
+        ap metrics_results
+      end
     end
   end
 end
