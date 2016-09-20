@@ -8,6 +8,9 @@ require 'rspec/rails'
 require 'factory_girl_rails'
 require "capybara/rspec"
 require 'capybara-screenshot/rspec'
+require 'simplecov'
+
+SimpleCov.start 'rails'
 
 Dir.glob('spec/support/**/*.rb') { |f| require_relative f.split('/')[1..-1].join('/') }
 

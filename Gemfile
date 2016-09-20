@@ -56,6 +56,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'email_spec'
   gem 'cucumber-rails', require: false
+  gem 'simplecov', :require => false
 end
 
 group :development do
