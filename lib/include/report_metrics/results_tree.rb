@@ -17,6 +17,31 @@ module ReportMetrics
       @nodes[index]
     end
 
+    def leafs
+      nodes.select { |node|
+        node.is_leaf?
+      }
+    end
+
+    def leaf_first_search
+      unless @leaf_first_search_result
+        @leaf_first_search_result = leafs
+        current_index = 0
+
+        while @leaf_first_search_result[current_index]
+          if @leaf_first_search_result[current_index].parent and
+              !@leaf_first_search_result.include? @leaf_first_search_result[current_index].parent
+
+            @leaf_first_search_result << @leaf_first_search_result[current_index].parent
+          end
+
+          current_index += 1
+        end
+      end
+
+      @leaf_first_search_result
+    end
+
     def treefy_activities(activities)
       root = {}
 
@@ -37,7 +62,7 @@ module ReportMetrics
             end
           end
 
-          parent = branch_to_add == root and root or nil
+          parent = branch_to_add == root ? nil : branch_to_add
           branch_to_add[activity.id] = ResultsTreeNode.new activity, parent
           @nodes[activity.id] = branch_to_add[activity.id]
         end

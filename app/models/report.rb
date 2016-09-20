@@ -71,9 +71,16 @@ class Report < ApplicationRecord
   end
 
   def metrics_results
-    metric_objs = []
-    metric_objs = metrics.map { |metric_class|
-      metric_class.new self
+    results_tree = ReportMetrics::ResultsTree.new activities.to_a
+
+    dependencies = []
+
+    metrics.each do |metric_class|
+      dependencies += metric_class.dependencies
+    end
+
+    metric_objs = dependencies.map { |dependency_class|
+      dependency_class.new self, results_tree
     }
 
     log_entries.each do |log_entry|
@@ -82,6 +89,7 @@ class Report < ApplicationRecord
       end
     end
 
-    metric_objs.map(&:resolve).reduce({}, &:merge)
+    metric_objs.map(&:resolve)
+    results_tree
   end
 end

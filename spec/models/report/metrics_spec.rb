@@ -38,37 +38,40 @@ RSpec.describe Report, type: :model do
     context 'applying metrics' do
       it 'can eval mean finish time' do
         create_sleep_log_entries_spanning_ten_days
-        report = create :report, metrics: [ReportMetrics::FinishTime], activities: [create_or_find_activity(:activity_sleep)]
-        expect(report.metrics_results[:finish_time][:average_formatted]).to eq '05:43'
+        activity = create_or_find_activity :activity_sleep
+        report = create :report, metrics: [ReportMetrics::FinishTime], activities: [activity]
+        expect(report.metrics_results[activity.id].metrics['ReportMetrics::FinishTime'][:average_formatted]).to eq '05:43'
       end
 
       it 'can eval mean finish time, mean duration and total duration, constraining weekdays' do
         create_sleep_log_entries_spanning_ten_days
-        report = create :report, metrics: [ReportMetrics::FinishTime, ReportMetrics::TotalDuration, ReportMetrics::MeanDuration],
-          activities: [create_or_find_activity(:activity_sleep)],
+
+        activity = create_or_find_activity(:activity_sleep)
+
+        # ReportMetrics::TotalDuration is added as an dependency of ReportMetrics::MeanDuration
+        report = create :report, metrics: [ReportMetrics::FinishTime, ReportMetrics::MeanDuration],
+          activities: [activity],
           weekdays: [0, 6]
 
-        metrics_results = report.metrics_results
+        activity_metrics = report.metrics_results[activity.id].metrics
 
-        expect(metrics_results[:finish_time][:average_formatted]).to eq '05:00'
-        expect(metrics_results[:finish_time][:average_in_seconds]).to eq 18000.0
+        expect(activity_metrics["ReportMetrics::FinishTime"]).
+          to eq ({:average_in_seconds=>18000.0, :average_formatted=>"05:00"})
 
-        expect(metrics_results[:total_duration][:in_seconds]).to eq 145800.0
-        expect(metrics_results[:total_duration][:formatted]).to eq '16h30min'
-
-        expect(metrics_results[:mean_duration][:in_seconds]).to eq 29160.0
-        expect(metrics_results[:mean_duration][:formatted]).to eq '8h6min'
+        expect(activity_metrics["ReportMetrics::TotalDuration"]).
+          to eq ({:in_seconds=>145800.0, :formatted=>"1d16h30min"})
       end
 
-      it 'can create an hierarchy when multiple activities are given' do
-        create_work_log_entries_spanning_ten_days
-        report = create :report, metrics: [ReportMetrics::TotalDuration, ReportMetrics::MeanDuration],
-          activities: [create_or_find_activity(:activity_work)],
-          weekdays: [1, 2, 3, 4, 5]
+      # it 'can create an hierarchy when multiple activities are given' do
+      #   create_work_log_entries_spanning_ten_days
 
-        metrics_results = report.metrics_results
-        ap metrics_results
-      end
+      #   report = create :report, metrics: [ReportMetrics::TotalDuration, ReportMetrics::MeanDuration],
+      #     activities: [create_or_find_activity(:activity_work)],
+      #     weekdays: [1, 2, 3, 4, 5]
+
+      #   metrics_results = report.metrics_results
+      #   ap metrics_results
+      # end
     end
   end
 end
