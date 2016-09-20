@@ -9,4 +9,4 @@
              'ng-click': 'dashboard_ctrl.toggleComponentVisibility(id)',
              'ng-attr-id': '{{ id }}-sub-menu-item'} {{ component.title }}
 
-  -# = link_to 'sing out', destroy_user_session_path, method: :delete, class: 'item'
+  = link_to 'Sign out', destroy_user_session_path, method: :delete, class: 'item', id: 'sign-out-link'
