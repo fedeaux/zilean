@@ -10,14 +10,15 @@ class LogTable.CellsGenerators.Day
   generate: (current_time) ->
     @cells = []
     current_cell = 0
+    base_time = angular.copy current_time
 
     while current_cell < @number_of_cells
       row = Math.floor current_cell / @number_of_columns
       column = current_cell % @number_of_columns
 
       if column == 0 and row > 0
-        current_time.subtract 1, 'day'
-        current_time.add @resolution, 'minutes'
+        base_time.add @resolution, 'minutes'
+        current_time = angular.copy base_time
 
       @cells.push(new LogTable.Cell current_cell, row, column, angular.copy(current_time), @, @cell_events)
 
