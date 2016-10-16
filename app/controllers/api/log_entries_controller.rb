@@ -14,9 +14,9 @@ class Api::LogEntriesController < Api::BaseController
   def create
     create_params = []
 
-    if params[:log_entry].any?
+    if params[:log_entry].to_h.any?
       create_params = [log_entry_params]
-    elsif params[:log_entries].any?
+    elsif params[:log_entries].to_a.any?
       create_params = log_entries_params[:log_entries]
     end
 
@@ -29,7 +29,7 @@ class Api::LogEntriesController < Api::BaseController
   end
 
   def crop
-    if params[:log_entries].any?
+    if params[:log_entries].to_a.any?
       log_entries_params[:log_entries].each do |log_entry_attributes|
         LogEntry.crop log_entry_attributes[:started_at], log_entry_attributes[:finished_at], current_user
       end
