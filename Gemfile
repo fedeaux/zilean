@@ -6,6 +6,7 @@ gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
 gem 'pg', '~> 0.18'
 
 # Utility
+gem 'listen'
 gem 'string-urlize'
 gem 'seedbank'
 gem 'dotenv-rails'
@@ -62,7 +63,6 @@ end
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller', '~> 0.7.2'
-  gem 'listen', '~> 3.0.5'
   gem 'web-console'
 
   gem 'capistrano'
