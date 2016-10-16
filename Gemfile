@@ -8,6 +8,7 @@ gem 'pg', '~> 0.18'
 # Utility
 gem 'string-urlize'
 gem 'seedbank'
+gem 'dotenv-rails'
 
 # Modeling
 gem 'ancestry'
@@ -44,7 +45,6 @@ gem 'text-table'
 gem 'pry'
 
 group :development, :test do
-  gem 'dotenv-rails'
   gem 'byebug'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -64,6 +64,13 @@ group :development do
   gem 'binding_of_caller', '~> 0.7.2'
   gem 'listen', '~> 3.0.5'
   gem 'web-console'
+
+  gem 'capistrano'
+  gem 'capistrano3-puma'
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rvm'
+  gem 'capistrano-rails-console'
 end
 
 group :production do
