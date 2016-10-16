@@ -10,6 +10,5 @@ Rails.application.routes.draw do
   end
 
   get 'templates/*name' => "dashboard#template"
-  get 'digest' => "dashboard#digest"
   root 'dashboard#index'
 end

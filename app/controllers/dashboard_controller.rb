@@ -4,20 +4,6 @@ class DashboardController < ApplicationController
   def index
   end
 
-  def digest
-    @digest = []
-
-    User.all.each do |user|
-      @digest << {
-        user: user,
-        activities: user.activities,
-        log_entries: user.log_entries
-      }
-    end
-
-    render json: @digest
-  end
-
   def template
     set_template_parameters
     render template_name, layout: false
