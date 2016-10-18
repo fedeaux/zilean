@@ -70,5 +70,9 @@ module ReportMetrics
 
       root
     end
+
+    def to_s
+      @root.values.map(&:to_s).join "\n"
+    end
   end
 end

@@ -73,7 +73,6 @@ RSpec.describe Report, type: :model do
           weekdays: [1, 2, 3, 4, 5]
 
         metrics_results = report.metrics_results
-        # ap metrics_results
       end
     end
   end
