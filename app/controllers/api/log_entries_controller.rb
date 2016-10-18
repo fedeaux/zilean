@@ -25,7 +25,7 @@ class Api::LogEntriesController < Api::BaseController
       LogEntry.create log_entry_attributes
     end
 
-    head 200
+    head :created
   end
 
   def crop
@@ -34,9 +34,9 @@ class Api::LogEntriesController < Api::BaseController
         LogEntry.crop log_entry_attributes[:started_at], log_entry_attributes[:finished_at], current_user
       end
 
-      head 200
+      head :ok
     else
-      head 400
+      head :bad_request
     end
   end
 

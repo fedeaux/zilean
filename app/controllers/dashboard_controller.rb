@@ -1,4 +1,6 @@
 class DashboardController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:digest]
+
   def index
   end
 
