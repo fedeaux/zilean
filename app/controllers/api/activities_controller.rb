@@ -8,13 +8,22 @@ class Api::ActivitiesController < Api::BaseController
   def create
     @activity = Activity.new(activity_params)
     @activity.user = current_user
-    @activity.save
-    render :show
+
+    if @activity.save
+      render :show, status: :created
+    else
+      @errors = @activity.errors
+      render 'shared/errors', status: :unprocessable_entity
+    end
   end
 
   def update
-    @activity.update activity_params
-    render :show
+    if @activity.update activity_params
+      render :show
+    else
+      @errors = @activity.errors
+      render 'shared/errors', status: :unprocessable_entity
+    end
   end
 
   def destroy
